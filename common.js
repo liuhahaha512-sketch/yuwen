@@ -82,6 +82,7 @@
   // ===== Tooltip for highlighted words =====
   const tooltip = document.getElementById('tooltip');
   if (tooltip) {
+    let activeTipEl = null;
     function showTip(el, pageOffset) {
       const text = el.getAttribute('data-tip');
       if (!text) return;
@@ -96,24 +97,33 @@
       if (top < pageOffset + 8) top = rect.bottom + pageOffset + 10;
       tooltip.style.left = left + 'px';
       tooltip.style.top = top + 'px';
+      activeTipEl = el;
     }
     function hideTip() {
       tooltip.classList.remove('show');
+      activeTipEl = null;
     }
     document.querySelectorAll('.hl').forEach(el => {
-      el.addEventListener('mouseenter', () => showTip(el, 0));
-      el.addEventListener('mouseleave', hideTip);
-      el.addEventListener('click', () => {
+      // Desktop: hover
+      el.addEventListener('mouseenter', () => { showTip(el, 0); });
+      el.addEventListener('mouseleave', () => { if (activeTipEl === el) hideTip(); });
+      // Touch: toggle on tap
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (activeTipEl === el) { hideTip(); return; }
         showTip(el, window.scrollY);
-        setTimeout(hideTip, 3000);
       });
       el.addEventListener('keydown', e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
+          if (activeTipEl === el) { hideTip(); return; }
           showTip(el, window.scrollY);
-          setTimeout(hideTip, 3000);
         }
       });
+    });
+    // Tap outside to close tooltip on touch devices
+    document.addEventListener('click', (e) => {
+      if (activeTipEl && !e.target.classList.contains('hl')) hideTip();
     });
   }
 
