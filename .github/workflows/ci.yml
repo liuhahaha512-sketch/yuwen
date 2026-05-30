@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: HTML 检查
+        run: npx --yes htmlhint *.html
+
+      - name: CSS 检查
+        run: npx --yes stylelint common.css
+
+      - name: JS 检查
+        run: npx --yes eslint common.js

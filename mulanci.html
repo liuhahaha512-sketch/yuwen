@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>木兰辞 — 互动学习</title>
+<link rel="stylesheet" href="common.css">
+<style>
+/* ===== Page-specific ===== */
+:root { --accent: #c0392b; --progress-gradient: linear-gradient(90deg, #c0392b, #e67e22); --timeline-gradient: linear-gradient(180deg, #c0392b, #e67e22, #2c5f2d); }
+
+#hero {
+  min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; background: linear-gradient(180deg, #f5f0e8 0%, #e8e0d0 100%);
+}
+.ink-mountain {
+  position: absolute; bottom: 0; width: 100%; height: 200px;
+  background: linear-gradient(135deg, transparent 40%, rgba(0,0,0,0.04) 40.5%, rgba(0,0,0,0.08) 50%, transparent 50.5%),
+              linear-gradient(200deg, transparent 30%, rgba(0,0,0,0.03) 30.5%, rgba(0,0,0,0.06) 45%, transparent 45.5%);
+}
+.hero-content { text-align: center; z-index: 1; padding: 2rem; }
+.hero-content h1 {
+  font-family: "STKaiti", "KaiTi", "Kaiti SC", "Noto Serif SC", serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  color: #2d2d2d;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+.hero-content .subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: #666;
+  margin-bottom: 1rem;
+}
+.hero-content .hook {
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  color: #c0392b;
+  font-style: italic;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+.btn-start {
+  display: inline-block; padding: 14px 48px; font-size: 1.2rem;
+  background: #c0392b; color: #f5f0e8; border: none; border-radius: 8px;
+  cursor: pointer; text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(192,57,43,0.3);
+}
+.btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(192,57,43,0.4); }
+.back-link {
+  display: inline-block; color: #999; text-decoration: none; font-size: 0.95rem;
+  transition: color 0.2s; margin-bottom: 0.8rem;
+}
+.back-link:hover { color: #c0392b; }
+
+.theme-card.xiao { border-left-color: #c0392b; }
+.theme-card.gender { border-left-color: #e67e22; }
+.theme-card.humble { border-left-color: #2c5f2d; }
+
+.rabbit-demo {
+  display: flex; gap: 2rem; justify-content: center; align-items: flex-end;
+  margin: 1rem 0;
+}
+.rabbit-box {
+  text-align: center; padding: 1rem; background: #faf8f2; border-radius: 8px; min-width: 120px;
+}
+.rabbit-icon { font-size: 3rem; }
+.rabbit-label { font-size: 0.9rem; margin-top: 0.5rem; color: #666; }
+.rabbit-box.male .rabbit-icon { animation: 扑朔 1s ease-in-out infinite; }
+.rabbit-box.female .rabbit-icon { animation: 迷离 1.5s ease-in-out infinite; }
+@keyframes 扑朔 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px) rotate(-5deg); } }
+@keyframes 迷离 { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.92); } }
+
+@media (max-width: 768px) {
+  .hero-content h1 { font-size: 3rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar" style="width:0%"></div>
+
+<button id="nav-toggle" aria-label="打开导航">☰</button>
+
+<nav id="sidebar" aria-label="文章导航">
+  <h3>📖 导航</h3>
+  <a href="#hero">首页</a>
+  <a href="#sec-background">知人论世</a>
+  <a href="#sec-reading">逐段精读</a>
+  <a href="#sec-dict">字词词典</a>
+  <a href="#sec-devices">文学手法</a>
+  <a href="#sec-timeline">叙事地图</a>
+  <a href="#sec-themes">主题讨论</a>
+  <a href="#sec-quiz">小测验</a>
+  <a href="#sec-extend">延伸阅读</a>
+</nav>
+
+<!-- Tooltip popup -->
+<div class="tooltip-popup" id="tooltip"></div>
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+  <div class="ink-cloud"></div>
+  <div class="ink-cloud"></div>
+  <div class="ink-cloud"></div>
+  <div class="ink-mountain"></div>
+  <div class="hero-content">
+    <h1>木兰辞</h1>
+    <p class="subtitle">北朝乐府民歌</p>
+    <p class="hook">你可知，一位普通少女，如何替父从军十二年而不被识破？</p>
+    <a href="index.html" class="back-link">← 返回篇目目录</a>
+    <br>
+    <a href="#sec-reading" class="btn-start">开始探索 ↓</a>
+  </div>
+</section>
+
+<!-- ===== MAIN ===== -->
+<div id="main">
+
+  <!-- ====== Section: 知人论世 ====== -->
+  <div class="section" id="sec-background">
+    <h2 class="section-title">知人论世</h2>
+
+    <div class="info-card">
+      <div class="info-card-header">
+        <div class="author-seal">乐</div>
+        <div>
+          <h3>北朝乐府民歌 · 作者不详</h3>
+          <div class="subtitle-tag">关于这篇的来源</div>
+        </div>
+      </div>
+      <div class="info-card-body">
+        <ul>
+          <li>《木兰辞》是一首<span class="highlight-text">北朝乐府民歌</span>，作者不详，由民间口头传唱，后经文人加工整理</li>
+          <li>最早见于南朝陈释智匠所编《古今乐录》，北宋郭茂倩《乐府诗集》收入"横吹曲辞"一类</li>
+          <li>与汉代《孔雀东南飞》并称<span class="highlight-text">"乐府双璧"</span>，是中国古代叙事诗的两座高峰</li>
+          <li>全诗 300 余字，篇幅不长，却完整讲述了一个跌宕起伏的故事</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-header">
+        <div class="author-seal">战</div>
+        <div>
+          <h3>时代背景：北朝战乱，尚武之风</h3>
+          <div class="subtitle-tag">木兰为什么能从军？</div>
+        </div>
+      </div>
+      <div class="info-card-body">
+        <p>南北朝（约 4—6 世纪），中国南北分裂，北方战乱频繁。北魏政权与北方游牧民族柔然等连年交战，征兵制度严苛——"军书十二卷，卷卷有爷名"并非夸张。</p>
+        <p>北方游牧民族尚武善战，女子骑马射箭并不罕见。正是这种社会环境，为木兰女扮男装、替父从军提供了可能性。</p>
+        <p>此外，此诗在流传过程中历经文人润色加工，现存版本中"尚书郎""可汗"等词汇可能含有唐代元素——一首民歌，穿越了数百年的传唱才定格为我们今天看到的样子。</p>
+        <div class="fun-fact">《木兰辞》的作者没有留下名字，但这首诗却被一代又一代的中国人传诵至今——也许好故事不需要署名。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 1: 逐段精读 ====== -->
+  <div class="section" id="sec-reading">
+    <h2 class="section-title">逐段精读</h2>
+
+    <!-- Card 1: 停机叹息 -->
+    <div class="poem-card">
+      <h3 style="color:#c0392b;margin-bottom:0.5rem;">第一幕：停机叹息</h3>
+      <div class="poem-original">
+        <span class="hl" tabindex="0" data-tip="织布机发出的声音，也作'唧唧'。形容织布声，这里暗示木兰心不在焉。">唧唧</span>复唧唧，木兰当户织。<br>
+        不闻机杼声，惟闻女叹息。
+      </div>
+      <div class="poem-translation">
+        织布机"唧唧"地响，木兰对着门在织布。听不到梭子穿梭的声音，只听见木兰在叹息。
+      </div>
+      <div class="tip-box">木兰为什么叹气？不是不想织布，而是心事重重！</div>
+
+      <div class="poem-original">
+        问女何所思，问女何所忆。<br>
+        女亦无所思，女亦无所忆。<br>
+        昨夜见<span class="hl" tabindex="0" data-tip="军中的文告，征兵通知">军帖</span>，<span class="hl" tabindex="0" data-tip="古代北方游牧民族首领的称号，这里指皇帝。读音：kè hán">可汗</span>大点兵，<br>
+        <span class="hl" tabindex="0" data-tip="虚数，形容很多卷，并非确指十二卷">军书十二卷</span>，卷卷有爷名。<br>
+        阿爷无大儿，木兰无长兄，<br>
+        愿为<span class="hl" tabindex="0" data-tip="市：名词活用为动词，买">市</span>鞍马，从此替爷征。
+      </div>
+      <div class="poem-translation">
+        （有人）问木兰在想什么？在惦记什么？木兰说我没想什么。昨夜看见军中的征兵文告，可汗在大规模征兵——名册那么多，每卷都有父亲的名字。父亲没有大儿子，我没有哥哥，我愿意去买马匹装备，从此代替父亲出征。
+      </div>
+      <div class="tip-box">注意"女亦无所思"——木兰说"没想什么"，其实是已经下定决心了！这就是"欲语还休"的含蓄之美。</div>
+      <div class="mini-quiz" data-quiz="1">
+        <div class="question">🤔 "军书十二卷"中的"十二"是什么意思？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">恰好十二卷</button>
+          <button class="opt-btn" data-correct="true">形容很多卷（虚数）</button>
+          <button class="opt-btn" data-correct="false">十二种不同的军书</button>
+        </div>
+        <div class="explanation">古汉语中，"十二"常作为虚数使用，表示数量很多，类似"三番五次"的"三"和"五"。</div>
+      </div>
+    </div>
+
+    <!-- Card 2: 市鞍出征 -->
+    <div class="poem-card">
+      <h3 style="color:#c0392b;margin-bottom:0.5rem;">第二幕：筹备出征</h3>
+      <div class="poem-original">
+        东市买骏马，西市买<span class="hl" tabindex="0" data-tip="马鞍和垫子。鞍：马鞍；鞯：马鞍下的垫子。读音：ān jiān">鞍鞯</span>，<br>
+        南市买<span class="hl" tabindex="0" data-tip="缰绳和笼头。读音：pèi tou">辔头</span>，北市买长鞭。
+      </div>
+      <div class="poem-translation">
+        到东市买骏马，到西市买马鞍和垫子，到南市买缰绳，到北市买长马鞭。
+      </div>
+      <div class="tip-box">东南西北四个方向，真的是跑遍四个市场？这是用铺排的手法渲染匆忙准备的紧张气氛！</div>
+      <div class="mini-quiz" data-quiz="2">
+        <div class="question">🤔 "东市买骏马，西市买鞍鞯……"用了什么修辞手法？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">比喻</button>
+          <button class="opt-btn" data-correct="true">排比（铺陈）</button>
+          <button class="opt-btn" data-correct="false">拟人</button>
+        </div>
+        <div class="explanation">四句结构相同，方位词+市+买+物品，这是排比手法，也叫铺陈，营造出紧张忙碌的氛围。</div>
+      </div>
+    </div>
+
+    <!-- Card 3: 征途思亲 -->
+    <div class="poem-card">
+      <h3 style="color:#c0392b;margin-bottom:0.5rem;">第三幕：征途思亲</h3>
+      <div class="poem-original">
+        <span class="hl" tabindex="0" data-tip="旦：早晨。辞：告别">旦辞爷娘去</span>，<span class="hl" tabindex="0" data-tip="暮：傍晚。宿：住宿">暮宿黄河边</span>，<br>
+        不闻爷娘唤女声，但闻黄河流水鸣<span class="hl" tabindex="0" data-tip="流水声。读音：jiān jiān">溅溅</span>。<br>
+        旦辞黄河去，暮至黑山头，<br>
+        不闻爷娘唤女声，但闻燕山胡骑鸣<span class="hl" tabindex="0" data-tip="马嘶叫声。读音：jiū jiū">啾啾</span>。
+      </div>
+      <div class="poem-translation">
+        早晨辞别父母上路，傍晚在黄河边宿营。听不见父母呼唤女儿的声音，只能听到黄河流水哗哗作响。早晨辞别黄河继续赶路，傍晚到达黑山头。听不见父母呼唤女儿的声音，只能听到燕山胡人战马啾啾嘶鸣。
+      </div>
+      <div class="tip-box">听听声音的变化——从"爷娘唤女声"到"流水鸣溅溅"再到"胡骑鸣啾啾"。家的温暖渐行渐远，战场的肃杀扑面而来。</div>
+      <div class="mini-quiz" data-quiz="3">
+        <div class="question">🤔 "旦辞……暮宿……"说明行军速度如何？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="true">非常快，一天就走很远</button>
+          <button class="opt-btn" data-correct="false">很慢，走走停停</button>
+          <button class="opt-btn" data-correct="false">没有变化</button>
+        </div>
+        <div class="explanation">"旦"是早晨，"暮"是傍晚，说明木兰一行行军速度极快，用夸张手法表现征途之急。</div>
+      </div>
+    </div>
+
+    <!-- Card 4: 十年征战 -->
+    <div class="poem-card">
+      <h3 style="color:#c0392b;margin-bottom:0.5rem;">第四幕：十年征战（高度浓缩）</h3>
+      <div class="poem-original">
+        <span class="hl" tabindex="0" data-tip="万里：虚数，形容极远。赴戎机：奔赴战场">万里赴戎机</span>，关山度若飞。<br>
+        <span class="hl" tabindex="0" data-tip="朔气：北方的寒气。金柝：军中打更用的器具">朔气传金柝</span>，寒光照铁衣。<br>
+        将军百战死，壮士十年归。
+      </div>
+      <div class="poem-translation">
+        不远万里奔赴战场，像飞一样跨过关隘山岭。北方的寒气传送着打更的声音，清冷的月光照着战士们的铠甲。将士们身经百战，有的战死沙场，有的多年后胜利归来。
+      </div>
+      <div class="tip-box">十年金戈铁马，仅用六句概括！作者不写厮杀的细节，而是用"朔气""寒光"营造肃杀的气氛。这是一种"留白"的艺术。</div>
+      <div class="mini-quiz" data-quiz="4">
+        <div class="question">🤔 "将军百战死，壮士十年归"运用了什么修辞？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">只有对偶</button>
+          <button class="opt-btn" data-correct="true">互文 + 对偶</button>
+          <button class="opt-btn" data-correct="false">只有夸张</button>
+        </div>
+        <div class="explanation">这句既是工整的对偶，又是互文——不是"将军都死了，士兵都回来了"，而是"将军和士兵们百战之后，有的牺牲，有的归来"。</div>
+      </div>
+    </div>
+
+    <!-- Card 5: 辞赏还乡 -->
+    <div class="poem-card">
+      <h3 style="color:#c0392b;margin-bottom:0.5rem;">第五幕：辞赏还乡</h3>
+      <div class="poem-original">
+        归来见天子，天子坐明堂。<br>
+        <span class="hl" tabindex="0" data-tip="策勋：记功。转：军功每提升一等叫一转">策勋十二转</span>，<span class="hl" tabindex="0" data-tip="强：有余，多">赏赐百千强</span>。<br>
+        可汗问所欲，木兰不用尚书郎，<br>
+        愿驰千里足，送儿还故乡。
+      </div>
+      <div class="poem-translation">
+        木兰归来朝见天子，天子坐在朝堂上。给木兰记了很大的功勋，赏赐了成千上万的财物。天子问木兰想要什么，木兰不愿做尚书郎这样的高官，只希望骑上千里马，送我回到故乡。
+      </div>
+      <div class="tip-box">功名利禄摆在面前，木兰却不为所动。"愿驰千里足，送儿还故乡"——她的追求从来不是荣华富贵，而是回到平凡的家乡生活。这种淡泊名利的情怀令人钦佩。</div>
+      <div class="mini-quiz" data-quiz="5">
+        <div class="question">🤔 木兰为什么拒绝"尚书郎"的高官？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">她害怕做官</button>
+          <button class="opt-btn" data-correct="true">她淡泊名利，只想回家团聚</button>
+          <button class="opt-btn" data-correct="false">她觉得自己能力不够</button>
+        </div>
+        <div class="explanation">木兰替父从军不是为了功名利禄，而是出于对父亲的孝心。战争结束后，她只想回到家人身边，这体现了她淡泊名利的品格。</div>
+      </div>
+    </div>
+
+    <!-- Card 6: 合家团聚 -->
+    <div class="poem-card">
+      <h3 style="color:#c0392b;margin-bottom:0.5rem;">第六幕：合家团聚</h3>
+      <div class="poem-original">
+        爷娘闻女来，出<span class="hl" tabindex="0" data-tip="外城。古代城有两重，内为城，外为郭">郭</span>相扶将；<br>
+        阿姊闻妹来，当户理红妆；<br>
+        小弟闻姊来，磨刀<span class="hl" tabindex="0" data-tip="磨刀声。形容磨刀的声音很快">霍霍</span>向猪羊。
+      </div>
+      <div class="poem-translation">
+        父母听说女儿回来了，互相搀扶着到城外迎接；姐姐听说妹妹回来了，对着门梳妆打扮；弟弟听说姐姐回来了，磨刀霍霍准备杀猪宰羊。
+      </div>
+
+      <div class="poem-original">
+        开我东阁门，坐我西阁床。<br>
+        脱我战时袍，<span class="hl" tabindex="0" data-tip="著：穿。读音：zhuó">著</span>我旧时裳。<br>
+        <span class="hl" tabindex="0" data-tip="当窗：对着窗户。理：梳理。云鬓：像云一样蓬松美丽的鬓发">当窗理云鬓</span>，<span class="hl" tabindex="0" data-tip="对镜：对着镜子。帖：通'贴'，贴上。花黄：古代妇女的一种面部装饰">对镜帖花黄</span>。<br>
+        出门看<span class="hl" tabindex="0" data-tip="通'伙伴'，同伍的战友">火伴</span>，火伴皆惊忙：<br>
+        同行十二年，不知木兰是女郎。
+      </div>
+      <div class="poem-translation">
+        打开我东屋的门，坐在我西屋的床上。脱下我战时的铠甲，穿上我从前的衣裳。对着窗户梳理美丽的鬓发，照着镜子贴上花黄。走出门去看望伙伴，伙伴们都大吃一惊：一起行军打仗十二年，竟然不知道木兰是位姑娘。
+      </div>
+      <div class="tip-box">注意家人的不同反应——父母是"扶将"（激动搀扶），姐姐是"理红妆"（打扮迎接），弟弟是"磨刀霍霍"（杀猪宰羊）。每个人的方式不同，但都满含欢喜！</div>
+      <div class="mini-quiz" data-quiz="6">
+        <div class="question">🤔 "开我东阁门，坐我西阁床"用了什么修辞？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="true">互文——不是只开门不坐床，而是到处看看坐坐</button>
+          <button class="opt-btn" data-correct="false">夸张——夸大兴奋程度</button>
+          <button class="opt-btn" data-correct="false">对比——东西阁的对比</button>
+        </div>
+        <div class="explanation">这是互文手法，意思是木兰兴奋地打开每个房间的门，在每张床上坐坐，表达了她久别归家后的激动心情。</div>
+      </div>
+    </div>
+
+    <!-- Card 7: 比喻作结 -->
+    <div class="poem-card">
+      <h3 style="color:#c0392b;margin-bottom:0.5rem;">第七幕：妙喻作结</h3>
+      <div class="poem-original">
+        雄兔脚<span class="hl" tabindex="0" data-tip="扑朔：脚乱蹬乱动的样子">扑朔</span>，雌兔眼<span class="hl" tabindex="0" data-tip="迷离：眼睛眯着，模糊不清">迷离</span>；<br>
+        双兔<span class="hl" tabindex="0" data-tip="傍地走：贴着地面跑。傍：贴近">傍地走</span>，<span class="hl" tabindex="0" data-tip="安：怎么，哪里">安能</span>辨我是雄雌？
+      </div>
+      <div class="poem-translation">
+        雄兔脚乱蹬，雌兔眼眯着；但当两只兔子贴着地面奔跑时，怎么能分辨出哪只是雄哪只是雌呢？
+      </div>
+      <div class="tip-box">这是全诗最巧妙的比喻！兔子静止时好辨雌雄，奔跑时就分不清了——就像木兰穿上战甲，谁能看出她是女英雄呢？</div>
+
+      <!-- Rabbit demo -->
+      <div class="rabbit-demo">
+        <div class="rabbit-box male">
+          <div class="rabbit-icon">🐇</div>
+          <div class="rabbit-label">雄兔·脚扑朔</div>
+        </div>
+        <div class="rabbit-box female">
+          <div class="rabbit-icon">🐇</div>
+          <div class="rabbit-label">雌兔·眼迷离</div>
+        </div>
+      </div>
+
+      <div class="mini-quiz" data-quiz="7">
+        <div class="question">🤔 "安能辨我是雄雌"表达了木兰怎样的情感？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">对战争的无奈</button>
+          <button class="opt-btn" data-correct="false">对伙伴的嘲讽</button>
+          <button class="opt-btn" data-correct="true">对性别平等的自信与豪迈</button>
+        </div>
+        <div class="explanation">这个巧妙的比喻以幽默而自信的语气，表达了男女本无高下之分的核心思想，升华了全诗主题。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 2: 字词词典 ====== -->
+  <div class="section" id="sec-dict">
+    <h2 class="section-title">字词词典</h2>
+    <p style="color:#666;margin-bottom:1rem;">悬停或点击高亮词汇查看注释。以下是重点字词汇总：</p>
+    <div class="dict-grid">
+      <div class="dict-card">
+        <span class="word">可汗</span><span class="pinyin">kè hán</span>
+        <div class="meaning">古代北方游牧民族首领的称号，此处指皇帝。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">鞍鞯</span><span class="pinyin">ān jiān</span>
+        <div class="meaning">马鞍和马鞍下的垫子。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">辔头</span><span class="pinyin">pèi tou</span>
+        <div class="meaning">驾驭牲口用的缰绳和笼头。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">溅溅</span><span class="pinyin">jiān jiān</span>
+        <div class="meaning">象声词，形容流水声。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">啾啾</span><span class="pinyin">jiū jiū</span>
+        <div class="meaning">象声词，形容马的嘶叫声。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">金柝</span><span class="pinyin">jīn tuò</span>
+        <div class="meaning">军中夜间打更报时用的器具。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">霍霍</span><span class="pinyin">huò huò</span>
+        <div class="meaning">象声词，磨刀的声音。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">爷</span><span class="pinyin">yé</span>
+        <div class="meaning">古义：父亲。今义：祖父。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">市</span>
+        <div class="meaning">名词活用为动词，"买"的意思。"愿为市鞍马" = 愿意去买马具。</div>
+        <span class="tag huoyong">词类活用</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">帖</span>
+        <div class="meaning">通"贴"，贴上。"对镜帖花黄" = 对着镜子贴上花黄。</div>
+        <span class="tag tongjia">通假字</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">著</span><span class="pinyin">zhuó</span>
+        <div class="meaning">穿。"著我旧时裳" = 穿上我从前的衣裳。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">郭</span>
+        <div class="meaning">外城。古代城有两重，内为城，外为郭。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">火伴</span>
+        <div class="meaning">通"伙伴"，古代军队编制，十人为一火，同火的人称火伴。</div>
+        <span class="tag tongjia">通假字</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">扑朔</span>
+        <div class="meaning">脚乱蹬乱动的样子。"雄兔脚扑朔"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">迷离</span>
+        <div class="meaning">眼睛眯着，模糊不清的样子。"雌兔眼迷离"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">安</span>
+        <div class="meaning">疑问代词，怎么，哪里。"安能辨我是雄雌"。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 3: 文学手法 ====== -->
+  <div class="section" id="sec-devices">
+    <h2 class="section-title">文学手法探索</h2>
+
+    <div class="device-card">
+      <h3>🔗 互文（互文见义）</h3>
+      <div class="explain">上下两句各自省略一部分内容，合起来才是完整的意思。两句互相补充，不可孤立理解。</div>
+      <div class="example">
+        "东市买骏马，西市买鞍鞯，南市买辔头，北市买长鞭"<br>
+        → 不是东市只买马，而是跑遍各处把所有装备买齐。
+      </div>
+      <div class="example">
+        "将军百战死，壮士十年归"<br>
+        → 将军和壮士们百战之后，有的牺牲，有的归来。
+      </div>
+      <div class="example">
+        "开我东阁门，坐我西阁床"<br>
+        → 每间屋子都打开看看坐坐，到处重温旧日时光。
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>📐 排比</h3>
+      <div class="explain">三个以上结构相同或相似的句子并列，增强气势和节奏感。</div>
+      <div class="example">
+        "爷娘闻女来，出郭相扶将；阿姊闻妹来，当户理红妆；小弟闻姊来，磨刀霍霍向猪羊。"<br>
+        → 三个"……闻……来"构成排比，渲染家人迎接木兰的热闹场景。
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>⚖️ 对偶</h3>
+      <div class="explain">两句字数相等、结构对称、意义相关。</div>
+      <div class="example">
+        "朔气传金柝，寒光照铁衣"<br>
+        → "朔气"对"寒光"，"传"对"照"，"金柝"对"铁衣"，工整优美。
+      </div>
+      <div class="example">
+        "当窗理云鬓，对镜帖花黄"<br>
+        → 描绘木兰恢复女儿装的经典场景。
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>🔊 顶针（顶真）</h3>
+      <div class="explain">前一句的结尾词语作为后一句的开头，首尾相连。</div>
+      <div class="example">
+        "归来见天子，天子坐明堂"——"天子"首尾相连。<br>
+        "军书十二卷，卷卷有爷名"——"卷"字顶针。
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>🔍 找一找：以下句子用了什么手法？</h3>
+      <div class="find-game" id="find-game">
+        <div class="sentence" data-answer="互文">
+          <span>"万里赴戎机，关山度若飞。"</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="对偶">对偶</button>
+            <button class="device-btn" data-answer="互文">互文</button>
+            <button class="device-btn" data-answer="排比">排比</button>
+          </div>
+        </div>
+        <div class="sentence" data-answer="排比">
+          <span>"东市买骏马，西市买鞍鞯，南市买辔头，北市买长鞭。"</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="对偶">对偶</button>
+            <button class="device-btn" data-answer="互文">互文</button>
+            <button class="device-btn" data-answer="排比">排比</button>
+          </div>
+        </div>
+        <div class="sentence" data-answer="对偶">
+          <span>"朔气传金柝，寒光照铁衣。"</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="对偶">对偶</button>
+            <button class="device-btn" data-answer="互文">互文</button>
+            <button class="device-btn" data-answer="排比">排比</button>
+          </div>
+        </div>
+        <div class="sentence" data-answer="对偶">
+          <span>"当窗理云鬓，对镜帖花黄。"</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="对偶">对偶</button>
+            <button class="device-btn" data-answer="互文">互文</button>
+            <button class="device-btn" data-answer="排比">排比</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 4: 叙事地图 ====== -->
+  <div class="section" id="sec-timeline">
+    <h2 class="section-title">叙事地图</h2>
+
+    <h3 style="margin-bottom:1rem;">🗺️ 故事时间线</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <h4>在家织布</h4>
+        <div class="desc">"唧唧复唧唧，木兰当户织"——平静的日常生活被打破。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>决定替父从军</h4>
+        <div class="desc">"愿为市鞍马，从此替爷征"——毅然决然，孝心驱使。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>筹备装备</h4>
+        <div class="desc">"东市买骏马……"——紧张忙碌地准备出征。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>远征途中</h4>
+        <div class="desc">"旦辞爷娘去，暮宿黄河边"——越行越远，思乡之情渐浓。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>十年征战</h4>
+        <div class="desc">"万里赴戎机……壮士十年归"——六年高度浓缩，战争残酷但木兰凯旋。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>辞赏还乡</h4>
+        <div class="desc">"木兰不用尚书郎，愿驰千里足，送儿还故乡"——功成不居。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>阖家团聚，恢复女装</h4>
+        <div class="desc">"脱我战时袍，著我旧时裳"——卸下铠甲，做回自己。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>伙伴惊忙，妙喻结尾</h4>
+        <div class="desc">"安能辨我是雄雌"——以幽默巧妙的比喻收尾，意味深长。</div>
+      </div>
+    </div>
+
+    <h3 style="margin:2rem 0 1rem;">📊 详略分析</h3>
+    <p style="color:#666;margin-bottom:1rem;font-size:0.95rem;">
+      作者对各部分着墨多少？思考一下：为什么十年战争写得最少？
+    </p>
+    <div class="chart-bar-container">
+      <div class="chart-row">
+        <div class="label">停机叹息</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:30%;background:#c0392b"></div></div>
+        <div class="count">10句</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">筹备出征</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:12%;background:#e67e22"></div></div>
+        <div class="count">4句</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">征途思亲</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:24%;background:#f1c40f"></div></div>
+        <div class="count">8句</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">十年征战</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:18%;background:#2c5f2d"></div></div>
+        <div class="count">6句</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">辞赏还乡</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:18%;background:#3498db"></div></div>
+        <div class="count">6句</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">合家团聚</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:36%;background:#9b59b6"></div></div>
+        <div class="count">12句</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">妙喻作结</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:12%;background:#1abc9c"></div></div>
+        <div class="count">4句</div>
+      </div>
+    </div>
+    <div class="tip-box" style="margin-top:1rem;">
+      十年征战只有 6 句，而合家团聚有 12 句！这说明《木兰辞》的重点不在"英雄事迹"，而在"人"——木兰的女儿情怀、家人亲情和对平凡生活的渴望。这就是"详略得当"的写作技巧。
+    </div>
+  </div>
+
+  <!-- ====== Section 5: 主题讨论 ====== -->
+  <div class="section" id="sec-themes">
+    <h2 class="section-title">主题讨论</h2>
+
+    <div class="theme-card xiao">
+      <h3>🏠 孝道：替父从军的根本动力</h3>
+      <div class="evidence">"阿爷无大儿，木兰无长兄，愿为市鞍马，从此替爷征。"</div>
+      <p class="prompt-q">思考：木兰的选择是"孝"的体现，但她也冒了巨大的风险。你认为在当时的社会背景下，这是否是一个合理的选择？</p>
+      <div class="notes-area" data-key="xiao">
+        <textarea placeholder="写下你的想法……"></textarea>
+        <button class="save-btn">保存笔记</button>
+        <span class="saved-msg">已保存 ✓</span>
+      </div>
+    </div>
+
+    <div class="theme-card gender">
+      <h3>⚖️ 性别平等："安能辨我是雄雌"</h3>
+      <div class="evidence">"雄兔脚扑朔，雌兔眼迷离；双兔傍地走，安能辨我是雄雌？"</div>
+      <p class="prompt-q">思考：一千多年前的诗歌就提出了性别平等的命题。在今天，你认为"安能辨我是雄雌"还有现实意义吗？</p>
+      <div class="notes-area" data-key="gender">
+        <textarea placeholder="写下你的想法……"></textarea>
+        <button class="save-btn">保存笔记</button>
+        <span class="saved-msg">已保存 ✓</span>
+      </div>
+    </div>
+
+    <div class="theme-card humble">
+      <h3>🌿 淡泊名利：功成身退</h3>
+      <div class="evidence">"可汗问所欲，木兰不用尚书郎，愿驰千里足，送儿还故乡。"</div>
+      <p class="prompt-q">思考：木兰拒绝了高官厚禄，只愿回家。在今天的社会，这种价值观还适用吗？为什么？</p>
+      <div class="notes-area" data-key="humble">
+        <textarea placeholder="写下你的想法……"></textarea>
+        <button class="save-btn">保存笔记</button>
+        <span class="saved-msg">已保存 ✓</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 6: 小测验 ====== -->
+  <div class="section" id="sec-quiz">
+    <h2 class="section-title">综合小测验</h2>
+    <p style="color:#666;margin-bottom:1.5rem;">检验一下你的学习成果吧！</p>
+
+    <div id="quiz-container">
+      <div class="quiz-item" data-quiz-q="1">
+        <span class="q-num">Q1.</span>
+        <div class="q-text">《木兰辞》是什么时期的民歌？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">唐代</div>
+          <div class="q-opt" data-correct="true">南北朝（北朝）</div>
+          <div class="q-opt" data-correct="false">汉代</div>
+          <div class="q-opt" data-correct="false">宋代</div>
+        </div>
+        <div class="q-explain">《木兰辞》是南北朝时期北朝的乐府民歌，与《孔雀东南飞》并称"乐府双璧"。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="2">
+        <span class="q-num">Q2.</span>
+        <div class="q-text">木兰替父从军的根本原因是什么？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">她想建功立业</div>
+          <div class="q-opt" data-correct="false">她被强迫从军</div>
+          <div class="q-opt" data-correct="true">父亲被征但无大儿，出于孝心</div>
+          <div class="q-opt" data-correct="false">她喜欢打仗</div>
+        </div>
+        <div class="q-explain">"阿爷无大儿，木兰无长兄，愿为市鞍马，从此替爷征。"木兰是出于对父亲的孝心，主动代替父亲出征。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="3">
+        <span class="q-num">Q3.</span>
+        <div class="q-text">"将军百战死，壮士十年归"用了哪些修辞手法？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">只有对偶</div>
+          <div class="q-opt" data-correct="true">互文和对偶</div>
+          <div class="q-opt" data-correct="false">排比和比喻</div>
+          <div class="q-opt" data-correct="false">只有夸张</div>
+        </div>
+        <div class="q-explain">这句既是工整的对偶（两句字数、结构对称），又是互文（将军和壮士们百战之后，有的牺牲有的归来）。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="4">
+        <span class="q-num">Q4.</span>
+        <div class="q-text">"可汗"的正确读音是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">kě hàn</div>
+          <div class="q-opt" data-correct="true">kè hán</div>
+          <div class="q-opt" data-correct="false">kě hán</div>
+          <div class="q-opt" data-correct="false">kè hàn</div>
+        </div>
+        <div class="q-explain">"可汗"读作 kè hán，是古代北方游牧民族对首领的称呼。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="5">
+        <span class="q-num">Q5.</span>
+        <div class="q-text">木兰拒绝做官后，她请求的是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">更多赏赐</div>
+          <div class="q-opt" data-correct="false">留在朝廷</div>
+          <div class="q-opt" data-correct="true">骑千里马回故乡</div>
+          <div class="q-opt" data-correct="false">继续征战</div>
+        </div>
+        <div class="q-explain">"愿驰千里足，送儿还故乡。"木兰不慕荣华富贵，只想回到家人身边。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="6">
+        <span class="q-num">Q6.</span>
+        <div class="q-text">全诗用详略得当的手法，写得最详细的是哪部分？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">十年征战</div>
+          <div class="q-opt" data-correct="true">合家团聚，恢复女装</div>
+          <div class="q-opt" data-correct="false">征途思亲</div>
+          <div class="q-opt" data-correct="false">筹备出征</div>
+        </div>
+        <div class="q-explain">合家团聚和恢复女装部分用了12句，是全诗最详细的部分，体现了诗歌关注"人"而非战争的主旨。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="7">
+        <span class="q-num">Q7.</span>
+        <div class="q-text">"对镜帖花黄"中的"帖"是什么字？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">形声字</div>
+          <div class="q-opt" data-correct="true">通假字，通"贴"</div>
+          <div class="q-opt" data-correct="false">古今字</div>
+          <div class="q-opt" data-correct="false">异体字</div>
+        </div>
+        <div class="q-explain">"帖"在这里是通假字，通"贴"，意思是贴上。"花黄"是古代妇女的一种面部装饰。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="8">
+        <span class="q-num">Q8.</span>
+        <div class="q-text">结尾的兔子比喻想表达什么？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">兔子跑得很快</div>
+          <div class="q-opt" data-correct="false">木兰喜欢兔子</div>
+          <div class="q-opt" data-correct="true">男女在能力上没有差别</div>
+          <div class="q-opt" data-correct="false">战争让人面目全非</div>
+        </div>
+        <div class="q-explain">"安能辨我是雄雌"以幽默巧妙的方式表达了男女本无高下之分的核心思想，升华了全诗主题。</div>
+      </div>
+    </div>
+
+    <div id="quiz-result">
+      <div class="score" id="quiz-score"></div>
+      <div class="msg" id="quiz-msg"></div>
+      <button class="btn-start" id="btn-reset-quiz" style="margin-top:1.5rem;font-size:1rem;padding:10px 32px;">重新测验</button>
+    </div>
+  </div>
+
+  <!-- ====== Section: 延伸阅读 ====== -->
+  <div class="section extend-section" id="sec-extend">
+    <h2 class="section-title">延伸阅读</h2>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">📜</span>
+        <h3>"乐府双璧"的另一篇——《孔雀东南飞》</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>《孔雀东南飞》是汉代乐府民歌，与《木兰辞》并称"乐府双璧"。两篇都以女性为主角，但结局截然不同：</p>
+          <blockquote>"孔雀东南飞，五里一徘徊。"——刘兰芝被婆家休弃，最终投水殉情，是一个悲剧。</blockquote>
+          <p>对比阅读：木兰替父从军，功成身退，阖家团圆——是喜剧。同样是古代女性的命运，一个被礼教吞噬，一个打破了命运枷锁。你觉得，为什么《木兰辞》能有一个圆满的结局？</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">🎬</span>
+        <h3>迪士尼的《花木兰》——西方如何讲中国故事？</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>1998 年，迪士尼推出动画电影《花木兰》（Mulan），2020 年又推出真人版。这是中国文化走向世界的标志性 IP，但两部电影的改编也引发了很多讨论：</p>
+          <ul style="list-style:none;padding:0;">
+            <li>· 动画版加入了木须龙、蟋蟀等喜剧角色，更贴近原诗的民间叙事风格</li>
+            <li>· 真人版删掉了歌舞和喜剧元素，风格更加严肃</li>
+            <li>· 两部片子都加入了"气"（qi）的概念，但这是中国哲学中"能量"的误读</li>
+          </ul>
+          <p>思考：一个中国故事被西方改编后，哪些东西保留了？哪些东西变了？你觉得改编得成功吗？</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">⚔️</span>
+        <h3>从古代到现代——"木兰精神"的演变</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>木兰的形象在中国历史上不断被重新诠释：</p>
+          <ul style="list-style:none;padding:0;">
+            <li>· <b>唐代</b> — 木兰被追封为"孝烈将军"，从民间故事进入正统叙事</li>
+            <li>· <b>明清</b> — 徐渭杂剧《雌木兰》、小说《隋唐演义》都有木兰形象</li>
+            <li>· <b>抗战时期</b> — 木兰成为"保家卫国"的精神象征</li>
+            <li>· <b>当代</b> — 从京剧、豫剧到电影、游戏，木兰成为女性力量的文化符号</li>
+          </ul>
+          <p>同一个故事，在不同的时代被赋予了不同的意义——这就是经典的生命力。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-nav">
+    <a href="index.html">← 返回篇目目录</a>
+    <a href="yueyanglouji.html">下一篇：岳阳楼记 →</a>
+  </div>
+  <p>木兰辞互动学习 · 适合中学生使用</p>
+  <p style="margin-top:0.3rem;">基于北朝乐府民歌《木兰辞》制作</p>
+</footer>
+
+<script>
+window.PAGE_CONFIG = {
+  accent: '#c0392b',
+  storagePrefix: 'mulan_note_',
+  quizName: '木兰辞'
+};
+</script>
+<script src="common.js" defer></script>
+</body>
+</html>

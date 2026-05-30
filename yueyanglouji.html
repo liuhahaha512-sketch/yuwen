@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>岳阳楼记 — 互动学习</title>
+<link rel="stylesheet" href="common.css">
+<style>
+/* ===== Page-specific ===== */
+:root { --accent: #2c5f2d; --progress-gradient: linear-gradient(90deg, #2c5f2d, #3498db); --timeline-gradient: linear-gradient(180deg, #2c5f2d, #3498db, #c0392b); }
+
+#hero {
+  min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; background: linear-gradient(180deg, #f5f0e8 0%, #e8e0d0 100%);
+}
+.ink-mountain {
+  position: absolute; bottom: 0; width: 100%; height: 200px;
+  background: linear-gradient(135deg, transparent 40%, rgba(0,0,0,0.04) 40.5%, rgba(0,0,0,0.08) 50%, transparent 50.5%),
+              linear-gradient(200deg, transparent 30%, rgba(0,0,0,0.03) 30.5%, rgba(0,0,0,0.06) 45%, transparent 45.5%);
+}
+.ink-lake {
+  position: absolute; bottom: 0; width: 100%; height: 80px;
+  background: linear-gradient(180deg, transparent, rgba(52,152,219,0.08));
+  animation: wave 4s ease-in-out infinite;
+}
+@keyframes wave {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.15); }
+}
+.hero-content { text-align: center; z-index: 1; padding: 2rem; }
+.hero-content h1 {
+  font-family: "STKaiti", "KaiTi", "Kaiti SC", "Noto Serif SC", serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  color: #2d2d2d;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+.hero-content .subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: #666;
+  margin-bottom: 1rem;
+}
+.hero-content .hook {
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  color: #2c5f2d;
+  font-style: italic;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+.btn-start {
+  display: inline-block; padding: 14px 48px; font-size: 1.2rem;
+  background: #2c5f2d; color: #f5f0e8; border: none; border-radius: 8px;
+  cursor: pointer; text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(44,95,45,0.3);
+}
+.btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(44,95,45,0.4); }
+.back-link {
+  display: inline-block; color: #999; text-decoration: none; font-size: 0.95rem;
+  transition: color 0.2s; margin-bottom: 0.8rem;
+}
+.back-link:hover { color: #2c5f2d; }
+
+.theme-card.tianxia { border-left-color: #c0392b; }
+.theme-card.bubei { border-left-color: #2c5f2d; }
+.theme-card.zhiyin { border-left-color: #3498db; }
+
+.weather-demo {
+  display: flex; gap: 1rem; justify-content: center; margin: 1rem 0;
+  flex-wrap: wrap;
+}
+.weather-box {
+  text-align: center; padding: 1rem; background: #faf8f2; border-radius: 8px; min-width: 140px;
+  transition: transform 0.3s;
+}
+.weather-box:hover { transform: scale(1.05); }
+.weather-icon { font-size: 3rem; }
+.weather-label { font-size: 0.9rem; margin-top: 0.5rem; color: #666; }
+.weather-box.yin .weather-icon { animation: rain 2s ease-in-out infinite; }
+.weather-box.qing .weather-icon { animation: shine 3s ease-in-out infinite; }
+@keyframes rain { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes shine { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+@media (max-width: 768px) {
+  .hero-content h1 { font-size: 3rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar" style="width:0%"></div>
+
+<button id="nav-toggle" aria-label="打开导航">☰</button>
+
+<nav id="sidebar" aria-label="文章导航">
+  <h3>📖 导航</h3>
+  <a href="#hero">首页</a>
+  <a href="#sec-background">知人论世</a>
+  <a href="#sec-reading">逐段精读</a>
+  <a href="#sec-dict">字词词典</a>
+  <a href="#sec-devices">文学手法</a>
+  <a href="#sec-structure">结构地图</a>
+  <a href="#sec-themes">主题讨论</a>
+  <a href="#sec-quiz">小测验</a>
+  <a href="#sec-extend">延伸阅读</a>
+</nav>
+
+<div class="tooltip-popup" id="tooltip"></div>
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+  <div class="ink-cloud"></div>
+  <div class="ink-cloud"></div>
+  <div class="ink-cloud"></div>
+  <div class="ink-mountain"></div>
+  <div class="ink-lake"></div>
+  <div class="hero-content">
+    <h1>岳阳楼记</h1>
+    <p class="subtitle">北宋 · 范仲淹</p>
+    <p class="hook">"先天下之忧而忧，后天下之乐而乐"——这句话，影响了中国读书人近千年。</p>
+    <a href="index.html" class="back-link">← 返回篇目目录</a>
+    <br>
+    <a href="#sec-reading" class="btn-start">开始探索 ↓</a>
+  </div>
+</section>
+
+<!-- ===== MAIN ===== -->
+<div id="main">
+
+  <!-- ====== Section: 知人论世 ====== -->
+  <div class="section" id="sec-background">
+    <h2 class="section-title">知人论世</h2>
+
+    <div class="info-card">
+      <div class="info-card-header">
+        <div class="author-seal">范</div>
+        <div>
+          <h3>范仲淹（989—1052）</h3>
+          <div class="subtitle-tag">字希文 · 苏州吴县人</div>
+        </div>
+      </div>
+      <div class="info-card-body">
+        <ul>
+          <li>北宋杰出的<span class="highlight-text">政治家、军事家、文学家</span></li>
+          <li>谥号<span class="highlight-text">"文正"</span>——古代文臣死后最高荣誉，整个北宋仅九人获此谥号</li>
+          <li>庆历三年（1043）主持"庆历新政"，推行改革，触及权贵利益</li>
+          <li>文学代表作除本文外，还有《渔家傲·秋思》（"浊酒一杯家万里，燕然未勒归无计"）</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-header">
+        <div class="author-seal">贬</div>
+        <div>
+          <h3>写作背景：新政失败，被贬邓州</h3>
+          <div class="subtitle-tag">这篇文章是怎么来的？</div>
+        </div>
+      </div>
+      <div class="info-card-body">
+        <p>庆历五年（1045），"庆历新政"失败，范仲淹被贬至邓州（今河南邓州）。同年，他的好友滕子京在巴陵郡重修岳阳楼，写信请范仲淹作记。</p>
+        <p>范仲淹提笔写下了这篇千古名文。但他当时身在邓州，<b>并未亲临岳阳楼</b>——全文凭滕子京送来的《洞庭湖秋晚图》和想象写成。</p>
+        <p>这解释了为什么文章的重点不在写景，而在议论抒情——他借岳阳楼之题，抒发自己"先忧后乐"的政治抱负，同时也是对同样被贬的滕子京的勉励。</p>
+        <div class="fun-fact">范仲淹没去过岳阳楼，却写出了关于岳阳楼最好的文章——这大概就是"功夫在诗外"。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 1: 逐段精读 ====== -->
+  <div class="section" id="sec-reading">
+    <h2 class="section-title">逐段精读</h2>
+
+    <!-- Card 1: 作记缘起 -->
+    <div class="poem-card">
+      <h3 style="color:#2c5f2d;margin-bottom:0.5rem;">第一段：作记缘起</h3>
+      <div class="poem-original">
+        庆历四年春，滕子京<span class="hl" tabindex="0" data-tip="谪：降职或流放。守：做……的太守。巴陵郡：今湖南岳阳一带">谪守巴陵郡</span>。<span class="hl" tabindex="0" data-tip="越：到了。明年：第二年">越明年</span>，<span class="hl" tabindex="0" data-tip="政：政务。通：顺利。和：和乐。俱：都。兴：兴办。具：同'俱'，都">政通人和，百废具兴</span>。<span class="hl" tabindex="0" data-tip="乃：于是。重修：重新修建">乃重修岳阳楼</span>，增其旧制，<span class="hl" tabindex="0" data-tip="刻：雕刻，记录。唐贤今人：唐代贤士和当代名家。诗赋：诗词歌赋">刻唐贤今人诗赋于其上</span>，<span class="hl" tabindex="0" data-tip="属：通'嘱'，嘱托。作文：写文章。以：来。记：记录">属予作文以记之</span>。
+      </div>
+      <div class="poem-translation">
+        庆历四年的春天，滕子京被降职到巴陵郡做太守。到了第二年，政务顺利，百姓和乐，各种荒废的事业都兴办起来了。于是重新修建岳阳楼，扩大它原有的规模，把唐代名家和当代人的诗词歌赋刻在上面，嘱托我写一篇文章来记述这件事。
+      </div>
+      <div class="tip-box">滕子京是被贬官的人，但他没有消沉，反而"政通人和，百废具兴"——这是不是在暗示后面要说的"不以己悲"呢？</div>
+      <div class="mini-quiz" data-quiz="1">
+        <div class="question">🤔 "百废具兴"中的"具"是什么用法？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">工具</button>
+          <button class="opt-btn" data-correct="true">通"俱"，都、全</button>
+          <button class="opt-btn" data-correct="false">具备</button>
+        </div>
+        <div class="explanation">"具"在这里是通假字，通"俱"，意思是"都、全"。"百废具兴"即各种荒废的事业都兴办起来了。</div>
+      </div>
+    </div>
+
+    <!-- Card 2: 岳阳大观 -->
+    <div class="poem-card">
+      <h3 style="color:#2c5f2d;margin-bottom:0.5rem;">第二段：岳阳大观</h3>
+      <div class="poem-original">
+        予观夫巴陵<span class="hl" tabindex="0" data-tip="胜状：优美的景色">胜状</span>，在洞庭一湖。<span class="hl" tabindex="0" data-tip="衔：含着。吞：吞没。形容洞庭湖包含远山、吞吐长江的壮阔气势">衔远山，吞长江</span>，<span class="hl" tabindex="0" data-tip="浩浩：水势大的样子。汤汤：水势汹涌的样子。读音：shāng shāng">浩浩汤汤</span>，<span class="hl" tabindex="0" data-tip="横溢：宽阔无边。际涯：边际">横无际涯</span>；<span class="hl" tabindex="0" data-tip="朝：早晨。晖：日光。晖：名词作动词，照耀。夕：傍晚">朝晖夕阴</span>，气象万千。<span class="hl" tabindex="0" data-tip="此则：这就是。岳阳楼之大观：岳阳楼的雄伟景象">此则岳阳楼之大观也</span>，前人之述<span class="hl" tabindex="0" data-tip="备：详尽，完备">备</span>矣。<span class="hl" tabindex="0" data-tip="然则：虽然如此，那么">然则</span>北通巫峡，南极潇湘，<span class="hl" tabindex="0" data-tip="迁客：被贬谪流放的官员。骚人：诗人，因屈原作《离骚》而称诗人为骚人">迁客骚人</span>，多会于此，<span class="hl" tabindex="0" data-tip="览：观赏。物：景物。情：感情。得：会。乎：吗">览物之情，得无异乎</span>？
+      </div>
+      <div class="poem-translation">
+        我看巴陵郡最美的景色，全在洞庭湖上。它衔接着远山，吞吞吐吐着长江，浩浩荡荡，宽阔无边；早晨阳光灿烂，傍晚暮色苍茫，景象变化无穷。这就是岳阳楼的雄伟景象，前人的记述已经很详尽了。然而这里北面通向巫峡，南面直到潇水和湘水，被贬的官员和诗人们，常常在这里聚会，他们观赏景物时的心情，难道会没有不同吗？
+      </div>
+      <div class="tip-box">"衔远山，吞长江"——一个"衔"字，一个"吞"字，把洞庭湖写活了！仿佛它是一头巨兽，气势磅礴。这就是炼字的功夫。</div>
+      <div class="mini-quiz" data-quiz="2">
+        <div class="question">🤔 "览物之情，得无异乎"在全文中起什么作用？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">总结上文</button>
+          <button class="opt-btn" data-correct="true">引出下文两种不同的情感</button>
+          <button class="opt-btn" data-correct="false">表达作者的疑问</button>
+        </div>
+        <div class="explanation">这句是承上启下的过渡句，用反问引出下文——不同景物会引发不同的情感，为第三段的"悲"和第四段的"喜"做铺垫。</div>
+      </div>
+    </div>
+
+    <!-- Card 3: 览物而悲 -->
+    <div class="poem-card">
+      <h3 style="color:#5d6d7e;margin-bottom:0.5rem;">第三段：览物而悲（阴雨之景）</h3>
+      <div class="poem-original">
+        <span class="hl" tabindex="0" data-tip="若夫：至于，用于引出下文">若夫</span><span class="hl" tabindex="0" data-tip="霪雨：连绵不断的雨。霏霏：雨下得密的样子。读音：yín yǔ fēi fēi">霪雨霏霏</span>，连月不开，<span class="hl" tabindex="0" data-tip="阴风：寒冷的风。怒号：猛烈地呼啸。读音：háo">阴风怒号</span>，<span class="hl" tabindex="0" data-tip="浊浪：浑浊的波浪">浊浪排空</span>；<span class="hl" tabindex="0" data-tip="日星隐曜：太阳和星星隐藏了光辉。曜：光芒">日星隐曜</span>，<span class="hl" tabindex="0" data-tip="山岳潜形：山岳隐没了形体">山岳潜形</span>；<span class="hl" tabindex="0" data-tip="商旅：商人旅客。不行：不能通行">商旅不行</span>，<span class="hl" tabindex="0" data-tip="樯：桅杆。楫：船桨。摧：折断">樯倾楫摧</span>；<span class="hl" tabindex="0" data-tip="薄暮：傍晚。薄：迫近">薄暮冥冥</span>，<span class="hl" tabindex="0" data-tip="虎啸：老虎吼叫。猿啼：猿猴啼叫">虎啸猿啼</span>。
+      </div>
+      <div class="poem-translation">
+        至于那连绵的阴雨下个不停，整月不见晴天，寒风怒吼，浊浪冲天；太阳和星星隐没了光辉，山岳也失去了轮廓；商人旅客无法出行，船桅折断、船桨毁坏；傍晚天色昏暗，老虎咆哮、猿猴哀啼。
+      </div>
+      <div class="poem-original">
+        登斯楼也，则有<span class="hl" tabindex="0" data-tip="去：离开。国：国都，京城。怀乡：思念家乡">去国怀乡</span>，忧<span class="hl" tabindex="0" data-tip="谗：说人坏话。讥：讥讽、指责">谗</span>畏讥，满目<span class="hl" tabindex="0" data-tip="萧然：萧条冷落的样子">萧然</span>，感极而悲者矣。
+      </div>
+      <div class="poem-translation">
+        此时登上这座楼，就会产生离开京城、思念家乡的情感，担心别人说坏话、害怕被讥讽，满眼都是萧条冷落的景象，感慨到了极点而万分悲伤。
+      </div>
+      <div class="tip-box">注意这一段的景物全是负面意象：阴雨、寒风、浊浪、暮色、虎啸……作者用景物烘托出"悲"的情感。这就是"一切景语皆情语"！</div>
+      <div class="mini-quiz" data-quiz="3">
+        <div class="question">🤔 "去国怀乡"中的"国"是什么意思？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">国家</button>
+          <button class="opt-btn" data-correct="true">国都、京城</button>
+          <button class="opt-btn" data-correct="false">故乡</button>
+        </div>
+        <div class="explanation">古汉语中，"国"常指国都、京城，而不是现代意义的国家。"去国"即离开京城，暗指被贬谪。</div>
+      </div>
+    </div>
+
+    <!-- Card 4: 览物而喜 -->
+    <div class="poem-card">
+      <h3 style="color:#f39c12;margin-bottom:0.5rem;">第四段：览物而喜（晴明之景）</h3>
+      <div class="poem-original">
+        至若<span class="hl" tabindex="0" data-tip="春和：春风和煦。景明：阳光明媚。景：日光">春和景明</span>，波澜不惊，<span class="hl" tabindex="0" data-tip="上下：天上水下。天光：天空的光辉。一：全，都。碧：青绿色">上下天光，一碧万顷</span>；<span class="hl" tabindex="0" data-tip="沙鸥：一种水鸟。集：停歇。翔：飞翔。栖：栖息">沙鸥翔集</span>，<span class="hl" tabindex="0" data-tip="锦鳞：色彩美丽的鱼。鳞：代指鱼（借代手法）">锦鳞游泳</span>；<span class="hl" tabindex="0" data-tip="岸芷：岸边的香草。汀兰：小洲上的兰花。芷：读音 zhǐ">岸芷汀兰</span>，<span class="hl" tabindex="0" data-tip="郁郁：香气浓郁的样子">郁郁青青</span>。
+      </div>
+      <div class="poem-translation">
+        至于春风和煦、阳光明媚的日子，湖面波澜不惊，天上水下连成一片碧绿，无边无际；沙鸥时而飞翔时而停歇，美丽的鱼儿在水中游来游去；岸边的香草和小洲上的兰花，香气浓郁、枝叶繁茂。
+      </div>
+      <div class="poem-original">
+        而或长烟<span class="hl" tabindex="0" data-tip="一空：完全消散。一：全，都">一空</span>，皓月千里，<span class="hl" tabindex="0" data-tip="浮光：水面上浮动的月光。跃金：像跳动的金子">浮光跃金</span>，<span class="hl" tabindex="0" data-tip="静影：静静的月影。沉璧：像沉入水中的玉璧">静影沉璧</span>，<span class="hl" tabindex="0" data-tip="渔歌互答：渔夫的歌声互相唱和。答：应答">渔歌互答</span>，此乐何极！
+      </div>
+      <div class="poem-translation">
+        有时湖上的云雾完全消散，皎洁的月光洒满千里，水面上浮动的月光像跳动的金子，静静的月影像沉入水中的玉璧，渔夫的歌声互相唱和，这种快乐哪有尽头！
+      </div>
+      <div class="poem-original">
+        登斯楼也，则有心旷神怡，<span class="hl" tabindex="0" data-tip="宠：恩宠，荣耀。辱：屈辱。偕：一起。忘：忘记">宠辱偕忘</span>，把酒<span class="hl" tabindex="0" data-tip="临：面对。风：清风">临风</span>，其喜洋洋者矣。
+      </div>
+      <div class="poem-translation">
+        此时登上这座楼，就会感到心胸开阔、精神愉快，荣耀和屈辱全都忘却，迎着清风举杯畅饮，那喜悦之情真是洋溢满心啊。
+      </div>
+      <div class="tip-box">对比第三段和第四段——同样的岳阳楼，同一个人，因景物不同，情感截然相反。一个"悲"字，一个"喜"字，反差何其鲜明！</div>
+
+      <!-- Weather scene demo -->
+      <div class="weather-demo">
+        <div class="weather-box yin">
+          <div class="weather-icon">🌧️</div>
+          <div class="weather-label">霪雨霏霏·悲</div>
+        </div>
+        <div class="weather-box qing">
+          <div class="weather-icon">☀️</div>
+          <div class="weather-label">春和景明·喜</div>
+        </div>
+      </div>
+
+      <div class="mini-quiz" data-quiz="4">
+        <div class="question">🤔 "锦鳞游泳"用了什么修辞手法？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">比喻</button>
+          <button class="opt-btn" data-correct="true">借代（鳞代指鱼）</button>
+          <button class="opt-btn" data-correct="false">拟人</button>
+        </div>
+        <div class="explanation">"鳞"本是鱼身上的鳞片，这里用部分代替整体，指代鱼本身。这是借代手法。</div>
+      </div>
+    </div>
+
+    <!-- Card 5: 古仁人之心 -->
+    <div class="poem-card">
+      <h3 style="color:#c0392b;margin-bottom:0.5rem;">第五段：古仁人之心（全文主旨）</h3>
+      <div class="poem-original">
+        <span class="hl" tabindex="0" data-tip="嗟夫：感叹词，相当于'唉'">嗟夫</span>！予尝<span class="hl" tabindex="0" data-tip="求：探求，追寻">求</span>古仁人之心，<span class="hl" tabindex="0" data-tip="或异：或许不同于">或异</span>二者之为，何哉？<span class="hl" tabindex="0" data-tip="不以物喜，不以己悲：不因外物的好坏和自己的得失而或喜或悲">不以物喜，不以己悲</span>；<span class="hl" tabindex="0" data-tip="居庙堂之高：在朝廷做高官。庙堂：朝廷。处江湖之远：被贬谪到偏远地方。江湖：民间">居庙堂之高则忧其民，处江湖之远则忧其君</span>。
+      </div>
+      <div class="poem-translation">
+        唉！我曾经探求古代品德高尚的人的思想，或许不同于以上两种表现，为什么呢？他们不因外物的好坏和自己的得失而或喜或悲；在朝廷做高官就担忧百姓，被贬到偏远地方就担忧君主。
+      </div>
+      <div class="poem-original">
+        是<span class="hl" tabindex="0" data-tip="进：在朝廷做官。退：被贬谪到民间">进亦忧，退亦忧</span>。然则何时而乐耶？其必曰"<span class="hl" tabindex="0" data-tip="先天下之忧而忧，后天下之乐而乐：在天下人忧虑之前先忧虑，在天下人快乐之后才快乐">先天下之忧而忧，后天下之乐而乐</span>"乎。<span class="hl" tabindex="0" data-tip="噫：感叹词。微：如果没有。斯人：这种人。吾谁与归：我同谁一道呢。归：归依，志同道合">噫！微斯人，吾谁与归</span>？
+      </div>
+      <div class="poem-translation">
+        这样看来，做官也忧虑，不做官也忧虑。那么什么时候才快乐呢？他们一定会说"在天下人忧虑之前先忧虑，在天下人快乐之后才快乐"吧。唉！如果没有这样的人，我同谁一道呢？
+      </div>
+      <div class="tip-box">全文的精华在此！"不以物喜，不以己悲"——超越了第三、四段中随景物而变的悲喜；"先忧后乐"——把个人情感升华为对天下的责任。这就是中国读书人的最高境界！</div>
+      <div class="mini-quiz" data-quiz="5">
+        <div class="question">🤔 "先天下之忧而忧，后天下之乐而乐"体现了作者怎样的情怀？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">消极悲观</button>
+          <button class="opt-btn" data-correct="true">以天下为己任的责任感</button>
+          <button class="opt-btn" data-correct="false">对现实生活的不满</button>
+        </div>
+        <div class="explanation">这句话体现了范仲淹以天下为己任的博大胸怀——忧在天下人之前，乐在天下人之后，是儒家"兼济天下"精神的集中体现。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 2: 字词词典 ====== -->
+  <div class="section" id="sec-dict">
+    <h2 class="section-title">字词词典</h2>
+    <p style="color:#666;margin-bottom:1rem;">悬停或点击高亮词汇查看注释。以下是重点字词汇总：</p>
+    <div class="dict-grid">
+      <div class="dict-card">
+        <span class="word">谪</span><span class="pinyin">zhé</span>
+        <div class="meaning">封建时代把高级官吏降职并调到边远地区做官。"谪守巴陵郡"。</div>
+        <span class="tag gujin">常见文言</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">具</span>
+        <div class="meaning">通"俱"，都、全。"百废具兴"。</div>
+        <span class="tag tongjia">通假字</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">属</span><span class="pinyin">zhǔ</span>
+        <div class="meaning">通"嘱"，嘱托、托付。"属予作文以记之"。</div>
+        <span class="tag tongjia">通假字</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">汤汤</span><span class="pinyin">shāng shāng</span>
+        <div class="meaning">水势浩大、水流很急的样子。"浩浩汤汤"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">晖</span>
+        <div class="meaning">日光。"朝晖夕阴"——早晨阳光明媚，傍晚天色阴暗。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">迁客</span>
+        <div class="meaning">被降职远调的官员。"迁"指官职调动（多为降职）。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">骚人</span>
+        <div class="meaning">诗人。因屈原作《离骚》而得名。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">霪雨</span><span class="pinyin">yín yǔ</span>
+        <div class="meaning">连绵不断的雨。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">排空</span>
+        <div class="meaning">冲向天空，形容波浪巨大。"浊浪排空"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">樯倾楫摧</span><span class="pinyin">qiáng qīng jí cuī</span>
+        <div class="meaning">桅杆倾倒，船桨折断。形容船只被风浪毁坏。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">薄</span>
+        <div class="meaning">迫近。"薄暮冥冥" = 傍晚天色昏暗。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">国</span>
+        <div class="meaning">古义：国都、京城。今义：国家。"去国怀乡"。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">景</span>
+        <div class="meaning">日光。"春和景明" = 春风和煦、阳光明媚。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">锦鳞</span>
+        <div class="meaning">借代修辞，用鱼的鳞片代指鱼。</div>
+        <span class="tag huoyong">借代</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">岸芷汀兰</span><span class="pinyin">àn zhǐ tīng lán</span>
+        <div class="meaning">岸边的香草和小洲上的兰花。芷：香草。汀：小洲。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">庙堂</span>
+        <div class="meaning">朝廷。"居庙堂之高" = 在朝廷做高官。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">江湖</span>
+        <div class="meaning">指民间、偏远地方。"处江湖之远" = 被贬到偏远之地。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">微</span>
+        <div class="meaning">如果没有。"微斯人" = 如果没有这样的人。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 3: 文学手法 ====== -->
+  <div class="section" id="sec-devices">
+    <h2 class="section-title">文学手法探索</h2>
+
+    <div class="device-card">
+      <h3>🎨 情景交融</h3>
+      <div class="explain">景物描写与情感抒发紧密结合，以景衬情，以情观景。第三段写阴雨之景烘托"悲"，第四段写晴明之景烘托"喜"。</div>
+      <div class="example">
+        "霪雨霏霏……虎啸猿啼" → 阴冷的景物烘托悲伤之情<br>
+        "春和景明……此乐何极" → 明媚的景物烘托喜悦之情
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>⚖️ 对比</h3>
+      <div class="explain">将两种截然相反的情景并列对照，突出差异，为后文主旨蓄势。</div>
+      <div class="example">
+        第三段（悲）vs 第四段（喜）——同一座楼，两种完全不同的情感体验。
+      </div>
+      <div class="example">
+        "迁客骚人"的悲喜 vs "古仁人"的不以物喜不以己悲——前者随境而变，后者超然物外。
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>📐 对偶</h3>
+      <div class="explain">句式整齐、音韵和谐，增强文章的节奏感和气势。</div>
+      <div class="example">
+        "衔远山，吞长江"——动宾结构对仗工整。<br>
+        "日星隐曜，山岳潜形"——主谓结构对仗。<br>
+        "沙鸥翔集，锦鳞游泳"——对仗精巧。<br>
+        "浮光跃金，静影沉璧"——比喻+对偶，画面感极强。<br>
+        "居庙堂之高则忧其民，处江湖之远则忧其君"——长句对偶，气势磅礴。
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>🔑 炼字</h3>
+      <div class="explain">精心选择最有力的字词，一字传神。</div>
+      <div class="example">
+        "<b>衔</b>远山，<b>吞</b>长江"——"衔""吞"二字把洞庭湖写成了有生命的巨兽，气势非凡。<br>
+        "浊浪<b>排</b>空"——"排"字写出波浪冲天之势，力量感十足。
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>🔍 找一找：以下句子主要用了什么手法？</h3>
+      <div class="find-game" id="find-game">
+        <div class="sentence" data-answer="对偶">
+          <span>"浮光跃金，静影沉璧。"</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="对偶">对偶</button>
+            <button class="device-btn" data-answer="借代">借代</button>
+            <button class="device-btn" data-answer="排比">排比</button>
+          </div>
+        </div>
+        <div class="sentence" data-answer="借代">
+          <span>"锦鳞游泳。"</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="对偶">对偶</button>
+            <button class="device-btn" data-answer="借代">借代</button>
+            <button class="device-btn" data-answer="排比">排比</button>
+          </div>
+        </div>
+        <div class="sentence" data-answer="对偶">
+          <span>"居庙堂之高则忧其民，处江湖之远则忧其君。"</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="对偶">对偶</button>
+            <button class="device-btn" data-answer="借代">借代</button>
+            <button class="device-btn" data-answer="排比">排比</button>
+          </div>
+        </div>
+        <div class="sentence" data-answer="对偶">
+          <span>"日星隐曜，山岳潜形。"</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="对偶">对偶</button>
+            <button class="device-btn" data-answer="借代">借代</button>
+            <button class="device-btn" data-answer="排比">排比</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 4: 结构地图 ====== -->
+  <div class="section" id="sec-structure">
+    <h2 class="section-title">结构地图</h2>
+
+    <h3 style="margin-bottom:1rem;">🗺️ 文章脉络</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <h4>作记缘起</h4>
+        <div class="desc">滕子京谪守→政通人和→重修岳阳楼→嘱托作记。叙事简洁，交代背景。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>岳阳大观（总写）</h4>
+        <div class="desc">"衔远山，吞长江"——概括洞庭湖的壮阔气象，引出"览物之情，得无异乎"的设问。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>览物而悲（分写·阴景）</h4>
+        <div class="desc">霪雨霏霏→阴风怒号→满目萧然→感极而悲。景物烘托情感。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>览物而喜（分写·晴景）</h4>
+        <div class="desc">春和景明→波澜不惊→心旷神怡→其喜洋洋。与前段形成鲜明对比。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>古仁人之心（主旨升华）</h4>
+        <div class="desc">"不以物喜，不以己悲"→"先天下之忧而忧，后天下之乐而乐"。超越悲喜，升华为天下情怀。</div>
+      </div>
+    </div>
+
+    <h3 style="margin:2rem 0 1rem;">📊 情感对比图</h3>
+    <p style="color:#666;margin-bottom:1rem;font-size:0.95rem;">
+      第三段的"悲"和第四段的"喜"，情感色彩截然不同——
+    </p>
+    <div class="mood-chart">
+      <div class="mood-row">
+        <div class="label">🌧️ 悲·阴雨</div>
+        <div class="bar-bg"><div class="bar-fill bei" style="width:90%">去国怀乡，忧谗畏讥</div></div>
+      </div>
+      <div class="mood-row">
+        <div class="label">☀️ 喜·晴明</div>
+        <div class="bar-bg"><div class="bar-fill xi" style="width:90%">心旷神怡，宠辱偕忘</div></div>
+      </div>
+      <div class="mood-row">
+        <div class="label">🏛️ 仁人</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,#c0392b,#e74c3c)">不以物喜，不以己悲</div></div>
+      </div>
+    </div>
+    <div class="tip-box" style="margin-top:1rem;">
+      注意：第三、四段的悲喜都是"迁客骚人"的情感，受外物影响而变化。而第五段"古仁人"超越了这种随境而变的悲喜——"不以物喜，不以己悲"，这才是作者真正推崇的人生境界。结构上叫做"先分后总"。
+    </div>
+  </div>
+
+  <!-- ====== Section 5: 主题讨论 ====== -->
+  <div class="section" id="sec-themes">
+    <h2 class="section-title">主题讨论</h2>
+
+    <div class="theme-card tianxia">
+      <h3>🌍 "先忧后乐"：以天下为己任</h3>
+      <div class="evidence">"先天下之忧而忧，后天下之乐而乐。"</div>
+      <p class="prompt-q">思考：范仲淹写这句话时，他自己也正在被贬谪之中。在逆境中依然心怀天下，这种精神在今天还有什么意义？</p>
+      <div class="notes-area" data-key="tianxia">
+        <textarea placeholder="写下你的想法……"></textarea>
+        <button class="save-btn">保存笔记</button>
+        <span class="saved-msg">已保存 ✓</span>
+      </div>
+    </div>
+
+    <div class="theme-card bubei">
+      <h3>🧘 "不以物喜，不以己悲"：超越环境的心境</h3>
+      <div class="evidence">"不以物喜，不以己悲。"</div>
+      <p class="prompt-q">思考：我们在考试考好时会喜，考差时会悲。范仲淹说"不以物喜，不以己悲"，你觉得这是一种什么样的心理状态？在现实生活中能做到吗？</p>
+      <div class="notes-area" data-key="bubei">
+        <textarea placeholder="写下你的想法……"></textarea>
+        <button class="save-btn">保存笔记</button>
+        <span class="saved-msg">已保存 ✓</span>
+      </div>
+    </div>
+
+    <div class="theme-card zhiyin">
+      <h3>🤝 知音难觅："微斯人，吾谁与归"</h3>
+      <div class="evidence">"噫！微斯人，吾谁与归？"</div>
+      <p class="prompt-q">思考：范仲淹在文末感叹"如果没有这样的人，我跟谁同道呢？"他说的"这样的人"是谁？他是在表达孤独吗？还是在暗示滕子京？</p>
+      <div class="notes-area" data-key="zhiyin">
+        <textarea placeholder="写下你的想法……"></textarea>
+        <button class="save-btn">保存笔记</button>
+        <span class="saved-msg">已保存 ✓</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 6: 小测验 ====== -->
+  <div class="section" id="sec-quiz">
+    <h2 class="section-title">综合小测验</h2>
+    <p style="color:#666;margin-bottom:1.5rem;">检验一下你的学习成果吧！</p>
+
+    <div id="quiz-container">
+      <div class="quiz-item" data-quiz-q="1">
+        <span class="q-num">Q1.</span>
+        <div class="q-text">《岳阳楼记》的作者是谁？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">欧阳修</div>
+          <div class="q-opt" data-correct="true">范仲淹</div>
+          <div class="q-opt" data-correct="false">苏轼</div>
+          <div class="q-opt" data-correct="false">王安石</div>
+        </div>
+        <div class="q-explain">范仲淹（989-1052），字希文，北宋著名的政治家、文学家。此文写于庆历六年（1046年），当时他被贬到邓州。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="2">
+        <span class="q-num">Q2.</span>
+        <div class="q-text">"百废具兴"中"具"的用法是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="true">通假字，通"俱"</div>
+          <div class="q-opt" data-correct="false">名词活用为动词</div>
+          <div class="q-opt" data-correct="false">古今异义</div>
+          <div class="q-opt" data-correct="false">一词多义</div>
+        </div>
+        <div class="q-explain">"具"通"俱"，意思是"都、全"，是通假字。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="3">
+        <span class="q-num">Q3.</span>
+        <div class="q-text">"衔远山，吞长江"中"衔"和"吞"的妙处在于？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">说明洞庭湖很大</div>
+          <div class="q-opt" data-correct="true">拟人化，写出洞庭湖吞吐山川的磅礴气势</div>
+          <div class="q-opt" data-correct="false">表现作者的恐惧感</div>
+          <div class="q-opt" data-correct="false">只是普通的描写手法</div>
+        </div>
+        <div class="q-explain">"衔"和"吞"两个动词把洞庭湖写活了，赋予它生命力，写出了气势磅礴的壮阔景象。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="4">
+        <span class="q-num">Q4.</span>
+        <div class="q-text">"锦鳞游泳"用了什么修辞手法？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">比喻</div>
+          <div class="q-opt" data-correct="true">借代</div>
+          <div class="q-opt" data-correct="false">夸张</div>
+          <div class="q-opt" data-correct="false">拟人</div>
+        </div>
+        <div class="q-explain">"鳞"代指鱼，是用部分代替整体的借代手法。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="5">
+        <span class="q-num">Q5.</span>
+        <div class="q-text">"去国怀乡"中"国"的古义是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">国家</div>
+          <div class="q-opt" data-correct="true">国都、京城</div>
+          <div class="q-opt" data-correct="false">诸侯国</div>
+          <div class="q-opt" data-correct="false">国土</div>
+        </div>
+        <div class="q-explain">古汉语中"国"常指国都、京城，不是现代意义的国家。"去国"即离开京城。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="6">
+        <span class="q-num">Q6.</span>
+        <div class="q-text">"不以物喜，不以己悲"的正确理解是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">不应该高兴也不应该悲伤</div>
+          <div class="q-opt" data-correct="true">不因外物的好坏和自己的得失而或喜或悲</div>
+          <div class="q-opt" data-correct="false">只有悲伤没有喜悦</div>
+          <div class="q-opt" data-correct="false">因为别人而喜怒哀乐</div>
+        </div>
+        <div class="q-explain">这句话的意思是：不因外物环境的好坏和自己的得失而忽喜忽悲，体现了古仁人超然物外的精神境界。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="7">
+        <span class="q-num">Q7.</span>
+        <div class="q-text">全文的主旨句是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">"衔远山，吞长江"</div>
+          <div class="q-opt" data-correct="false">"览物之情，得无异乎"</div>
+          <div class="q-opt" data-correct="true">"先天下之忧而忧，后天下之乐而乐"</div>
+          <div class="q-opt" data-correct="false">"微斯人，吾谁与归"</div>
+        </div>
+        <div class="q-explain">"先天下之忧而忧，后天下之乐而乐"是全文的核心主旨句，表达了作者以天下为己任的政治抱负和博大胸怀。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="8">
+        <span class="q-num">Q8.</span>
+        <div class="q-text">文章第三、四段与第五段的关系是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">并列关系</div>
+          <div class="q-opt" data-correct="true">先分后总（铺垫与升华）</div>
+          <div class="q-opt" data-correct="false">因果关系</div>
+          <div class="q-opt" data-correct="false">转折关系</div>
+        </div>
+        <div class="q-explain">第三、四段分别写"悲"和"喜"两种情感（分写），第五段提出"不以物喜，不以己悲"和"先忧后乐"的主旨（总写），是从具体到抽象、从铺垫到升华的关系。</div>
+      </div>
+    </div>
+
+    <div id="quiz-result">
+      <div class="score" id="quiz-score"></div>
+      <div class="msg" id="quiz-msg"></div>
+      <button class="btn-start" id="btn-reset-quiz" style="margin-top:1.5rem;font-size:1rem;padding:10px 32px;">重新测验</button>
+    </div>
+  </div>
+
+  <!-- ====== Section: 延伸阅读 ====== -->
+  <div class="section extend-section" id="sec-extend">
+    <h2 class="section-title">延伸阅读</h2>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">🏯</span>
+        <h3>中国四大名楼——每座楼都有一篇千古名文</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>中国古代有四座著名的楼阁，每座都因一篇名文而不朽：</p>
+          <ul style="list-style:none;padding:0;">
+            <li>· <b>岳阳楼</b>（湖南岳阳）—— 范仲淹《岳阳楼记》："先天下之忧而忧，后天下之乐而乐"</li>
+            <li>· <b>黄鹤楼</b>（湖北武汉）—— 崔颢《黄鹤楼》："昔人已乘黄鹤去，此地空余黄鹤楼"</li>
+            <li>· <b>滕王阁</b>（江西南昌）—— 王勃《滕王阁序》："落霞与孤鹜齐飞，秋水共长天一色"</li>
+            <li>· <b>鹳雀楼</b>（山西永济）—— 王之涣《登鹳雀楼》："欲穷千里目，更上一层楼"</li>
+          </ul>
+          <p>有趣的是，这四篇文章的作者——范仲淹、崔颢、王勃、王之涣——都曾在仕途上遭遇挫折。楼阁之所以出名，不是因为建筑本身，而是因为站在楼上的人写下了什么。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">📝</span>
+        <h3>对比阅读——《滕王阁序》（王勃）</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>王勃写《滕王阁序》时年仅二十余岁，同样是借楼阁抒情，但情感与范仲淹截然不同：</p>
+          <blockquote>"老当益壮，宁移白首之心？穷且益坚，不坠青云之志。"</blockquote>
+          <p>王勃写的是少年才子的豪情万丈，范仲淹写的是中年政治家的深沉忧思。两篇文章放在一起读，能看到不同人生阶段的精神面貌——一个意气风发，一个忧国忧民。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">🔗</span>
+        <h3>"忧乐观"的精神谱系——从范仲淹到林则徐</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>"先天下之忧而忧，后天下之乐而乐"——这句话开创了一种精神传统，影响了此后近千年的中国读书人：</p>
+          <ul style="list-style:none;padding:0;">
+            <li>· <b>顾炎武</b>（明末清初）："天下兴亡，匹夫有责"</li>
+            <li>· <b>林则徐</b>（清代）："苟利国家生死以，岂因祸福避趋之"</li>
+            <li>· <b>鲁迅</b>（现代）："寄意寒星荃不察，我以我血荐轩辕"</li>
+          </ul>
+          <p>一条跨越千年的精神线索：中国的知识分子始终将个人命运与天下苍生联系在一起。这或许就是"先忧后乐"最深层的力量。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">🎭</span>
+        <h3>范仲淹的另一面——不只是文豪</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>我们对范仲淹的印象多半是"文学家"，但他的人生远比这丰富：</p>
+          <ul style="list-style:none;padding:0;">
+            <li>· <b>军事家</b>：镇守西北边境，防御西夏，羌人称他为"龙图老子"——"军中有一范，西贼闻之惊破胆"</li>
+            <li>· <b>教育家</b>：创办应天府书院，亲自讲学，是中国历史上最早的书院之一</li>
+            <li>· <b>词人</b>：《渔家傲·秋思》开创了豪放词的先声，直接影响了后来的苏轼和辛弃疾</li>
+          </ul>
+          <p>一个既能写文章、又能带兵打仗、还懂教育的人——这就是北宋士大夫的理想模样。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-nav">
+    <a href="index.html">← 返回篇目目录</a>
+    <a href="mulanci.html">上一篇：木兰辞 →</a>
+  </div>
+  <p>岳阳楼记互动学习 · 适合中学生使用</p>
+  <p style="margin-top:0.3rem;">基于北宋范仲淹《岳阳楼记》制作</p>
+</footer>
+
+<script>
+window.PAGE_CONFIG = {
+  accent: '#2c5f2d',
+  storagePrefix: 'yylj_note_',
+  quizName: '岳阳楼记'
+};
+</script>
+<script src="common.js" defer></script>
+</body>
+</html>
