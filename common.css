@@ -11,6 +11,11 @@ body {
   overflow-x: hidden;
 }
 
+/* 触摸设备禁用 tap 高亮 */
+button, .opt-btn, .device-btn, .q-opt, .save-btn, .btn-start, .extend-card-header, .nav-toggle {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* ===== Scrollbar ===== */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-thumb { background: var(--accent, #c0392b); border-radius: 3px; }
@@ -65,7 +70,9 @@ body {
   box-shadow: 0 2px 12px rgba(0,0,0,0.25); transition: transform 0.2s, opacity 0.3s;
   display: flex; align-items: center; justify-content: center;
 }
-#nav-toggle:hover { transform: scale(1.08); }
+@media (hover: hover) {
+  #nav-toggle:hover { transform: scale(1.08); }
+}
 #nav-toggle:active { transform: scale(0.95); }
 #nav-toggle:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
 
@@ -76,10 +83,10 @@ body {
   font-size: 0.95rem; transition: background 0.2s, color 0.2s;
   border-left: 3px solid transparent;
 }
-#sidebar a:hover, #sidebar a.active {
-  background: rgba(255,255,255,0.08); color: #fff;
-  border-left-color: var(--accent, #c0392b);
+@media (hover: hover) {
+  #sidebar a:hover { background: rgba(255,255,255,0.08); color: #fff; border-left-color: var(--accent, #c0392b); }
 }
+#sidebar a.active { background: rgba(255,255,255,0.08); color: #fff; border-left-color: var(--accent, #c0392b); }
 
 /* Sidebar overlay */
 #sidebar-overlay {
@@ -131,7 +138,10 @@ a:focus-visible, button:focus-visible, textarea:focus-visible,
   border: 1px solid rgba(0,0,0,0.04);
   transition: box-shadow 0.3s, transform 0.3s;
 }
-.poem-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.08); transform: translateY(-1px); }
+/* 仅在有 hover 能力的设备上生效（排除触摸屏） */
+@media (hover: hover) {
+  .poem-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.08); transform: translateY(-1px); }
+}
 
 .poem-original {
   font-family: "STKaiti", "KaiTi", "Kaiti SC", "Noto Serif SC", serif;
@@ -155,7 +165,9 @@ a:focus-visible, button:focus-visible, textarea:focus-visible,
   outline-offset: 2px;
   border-radius: 2px;
 }
-.poem-original .hl:hover { background: rgba(192, 57, 43, 0.06); background: color-mix(in srgb, var(--accent, #c0392b) 6%, transparent); }
+@media (hover: hover) {
+  .poem-original .hl:hover { background: rgba(192, 57, 43, 0.06); background: color-mix(in srgb, var(--accent, #c0392b) 6%, transparent); }
+}
 
 .poem-translation {
   font-size: 1rem; color: #555; padding: 1rem 1.2rem;
@@ -185,7 +197,9 @@ a:focus-visible, button:focus-visible, textarea:focus-visible,
   background: #fff; cursor: pointer; transition: all 0.2s; font-size: 0.95rem;
   font-family: inherit;
 }
-.mini-quiz .opt-btn:hover { border-color: #42a5f5; background: #e3f2fd; transform: translateY(-1px); }
+@media (hover: hover) {
+  .mini-quiz .opt-btn:hover { border-color: #42a5f5; background: #e3f2fd; transform: translateY(-1px); }
+}
 .mini-quiz .opt-btn.disabled { pointer-events: none; }
 .mini-quiz .opt-btn.correct { background: #c8e6c9; border-color: #4caf50; }
 .mini-quiz .opt-btn.correct::after { content: " ✓"; }
@@ -207,7 +221,9 @@ a:focus-visible, button:focus-visible, textarea:focus-visible,
   box-shadow: 0 1px 6px rgba(0,0,0,0.04);
   transition: transform 0.2s, box-shadow 0.2s;
 }
-.dict-card:hover { transform: translateY(-3px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+@media (hover: hover) {
+  .dict-card:hover { transform: translateY(-3px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+}
 .dict-card .word { font-size: 1.3rem; font-weight: bold; color: var(--accent, #c0392b); }
 .dict-card .pinyin { font-size: 0.9rem; color: #999; margin-left: 0.5rem; }
 .dict-card .meaning { margin-top: 0.5rem; font-size: 0.95rem; color: #555; }
@@ -226,7 +242,9 @@ a:focus-visible, button:focus-visible, textarea:focus-visible,
   border: 1px solid rgba(0,0,0,0.04);
   transition: box-shadow 0.3s, transform 0.3s;
 }
-.device-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.08); transform: translateY(-1px); }
+@media (hover: hover) {
+  .device-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.08); transform: translateY(-1px); }
+}
 .device-card h3 { color: var(--accent, #c0392b); font-size: 1.2rem; margin-bottom: 0.8rem; }
 .device-card .example {
   background: #faf8f2; padding: 0.8rem 1rem; border-radius: 8px; margin: 0.5rem 0;
@@ -241,13 +259,17 @@ a:focus-visible, button:focus-visible, textarea:focus-visible,
   display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;
   border: 1px solid rgba(0,0,0,0.04); transition: background 0.2s;
 }
-.find-game .sentence:hover { background: #f5f0e8; }
+@media (hover: hover) {
+  .find-game .sentence:hover { background: #f5f0e8; }
+}
 .find-game .sentence .device-options { display: flex; gap: 0.4rem; }
 .find-game .device-btn {
   padding: 5px 14px; font-size: 0.85rem; border: 1.5px solid #ddd; border-radius: 6px;
   background: #fff; cursor: pointer; transition: all 0.2s; font-family: inherit;
 }
-.find-game .device-btn:hover { background: #e3f2fd; border-color: #90caf9; transform: translateY(-1px); }
+@media (hover: hover) {
+  .find-game .device-btn:hover { background: #e3f2fd; border-color: #90caf9; transform: translateY(-1px); }
+}
 .find-game .device-btn.disabled { pointer-events: none; }
 .find-game .device-btn.correct { background: #c8e6c9; border-color: #4caf50; }
 .find-game .device-btn.correct::after { content: " ✓"; }
@@ -275,9 +297,11 @@ a:focus-visible, button:focus-visible, textarea:focus-visible,
   transition: opacity 0.3s, transform 0.3s;
   filter: blur(0.3px);
 }
-.timeline-item:hover::before {
-  opacity: 1;
-  transform: scale(1.3);
+@media (hover: hover) {
+  .timeline-item:hover::before {
+    opacity: 1;
+    transform: scale(1.3);
+  }
 }
 .timeline-item h4 { color: var(--accent, #c0392b); font-size: 1.1rem; }
 .timeline-item .desc { color: #666; font-size: 0.95rem; }
@@ -304,7 +328,9 @@ a:focus-visible, button:focus-visible, textarea:focus-visible,
   box-shadow: 0 1px 8px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.02);
   transition: box-shadow 0.3s, transform 0.3s;
 }
-.theme-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.08); transform: translateY(-1px); }
+@media (hover: hover) {
+  .theme-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.08); transform: translateY(-1px); }
+}
 .theme-card h3 { margin-bottom: 0.5rem; }
 .theme-card .evidence {
   font-family: "STKaiti", "KaiTi", serif; font-size: 1.05rem;
@@ -325,7 +351,9 @@ a:focus-visible, button:focus-visible, textarea:focus-visible,
   border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem;
   font-family: inherit; transition: background 0.2s, transform 0.2s;
 }
-.notes-area .save-btn:hover { background: color-mix(in srgb, var(--accent, #c0392b) 80%, black); transform: translateY(-1px); }
+@media (hover: hover) {
+  .notes-area .save-btn:hover { background: color-mix(in srgb, var(--accent, #c0392b) 80%, black); transform: translateY(-1px); }
+}
 .notes-area .save-btn:active { transform: translateY(0); }
 .notes-area .saved-msg { color: var(--accent, #c0392b); font-size: 0.85rem; margin-left: 0.5rem; opacity: 0; transition: opacity 0.3s; }
 .notes-area .saved-msg.show { opacity: 1; }
@@ -337,7 +365,9 @@ a:focus-visible, button:focus-visible, textarea:focus-visible,
   border: 1px solid rgba(0,0,0,0.04);
   transition: box-shadow 0.3s;
 }
-.quiz-item:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+@media (hover: hover) {
+  .quiz-item:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+}
 .quiz-item .q-num { color: var(--accent, #c0392b); font-weight: bold; }
 .quiz-item .q-text { font-size: 1.05rem; margin: 0.5rem 0; }
 .quiz-item .q-options { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
@@ -346,7 +376,9 @@ a:focus-visible, button:focus-visible, textarea:focus-visible,
   cursor: pointer; transition: all 0.2s; font-size: 0.95rem; background: #fff;
   font-family: inherit;
 }
-.quiz-item .q-opt:hover { border-color: #42a5f5; background: #e3f2fd; transform: translateY(-1px); }
+@media (hover: hover) {
+  .quiz-item .q-opt:hover { border-color: #42a5f5; background: #e3f2fd; transform: translateY(-1px); }
+}
 .quiz-item .q-opt.correct { background: #c8e6c9; border-color: #4caf50; }
 .quiz-item .q-opt.correct::after { content: " ✓"; }
 .quiz-item .q-opt.wrong { background: #ffcdd2; border-color: #ef5350; }
@@ -378,7 +410,9 @@ footer .footer-nav a {
   color: var(--accent, #c0392b); text-decoration: none; font-size: 0.95rem;
   transition: color 0.2s;
 }
-footer .footer-nav a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+@media (hover: hover) {
+  footer .footer-nav a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+}
 
 /* ===== 知人论世 ===== */
 .info-card {
@@ -387,7 +421,9 @@ footer .footer-nav a:hover { text-decoration: underline; text-decoration-thickne
   border: 1px solid rgba(0,0,0,0.04);
   transition: box-shadow 0.3s, transform 0.3s;
 }
-.info-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.08); transform: translateY(-1px); }
+@media (hover: hover) {
+  .info-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.08); transform: translateY(-1px); }
+}
 .info-card-header {
   display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;
 }
@@ -433,13 +469,17 @@ footer .footer-nav a:hover { text-decoration: underline; text-decoration-thickne
   border: 1px solid rgba(0,0,0,0.04);
   overflow: hidden; transition: box-shadow 0.3s, transform 0.3s;
 }
-.extend-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.08); transform: translateY(-1px); }
+@media (hover: hover) {
+  .extend-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.08); transform: translateY(-1px); }
+}
 .extend-card-header {
   display: flex; align-items: center; gap: 0.8rem;
   padding: 1.2rem 1.5rem; cursor: pointer;
   transition: background 0.2s; user-select: none;
 }
-.extend-card-header:hover { background: #faf8f2; }
+@media (hover: hover) {
+  .extend-card-header:hover { background: #faf8f2; }
+}
 .extend-icon {
   font-size: 1.5rem; flex-shrink: 0;
 }
@@ -464,7 +504,9 @@ footer .footer-nav a:hover { text-decoration: underline; text-decoration-thickne
   color: var(--accent, #c0392b); text-decoration: underline;
   text-underline-offset: 3px;
 }
-.extend-content-inner a:hover { text-decoration-thickness: 2px; }
+@media (hover: hover) {
+  .extend-content-inner a:hover { text-decoration-thickness: 2px; }
+}
 .extend-content-inner blockquote {
   margin: 0.8rem 0; padding: 0.8rem 1rem;
   background: #faf8f2; border-left: 3px solid var(--accent, #c0392b);

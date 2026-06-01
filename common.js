@@ -41,6 +41,14 @@
         hideOverlay();
       }
     });
+    // 触摸设备：touchend 关闭侧边栏（更快速响应）
+    document.addEventListener('touchend', e => {
+      if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && e.target !== navToggle) {
+        sidebar.classList.remove('open');
+        setTimeout(() => navToggle.classList.remove('hidden'), 300);
+        hideOverlay();
+      }
+    }, { passive: true });
   }
 
   // ===== Scroll spy =====
@@ -83,18 +91,24 @@
   const tooltip = document.getElementById('tooltip');
   if (tooltip) {
     let activeTipEl = null;
-    function showTip(el, pageOffset) {
+    // 检测是否为触摸设备（更可靠的方式）
+    let isTouchDevice = false;
+    document.addEventListener('touchstart', () => { isTouchDevice = true; }, { once: true, passive: true });
+
+    function showTip(el) {
       const text = el.getAttribute('data-tip');
       if (!text) return;
       tooltip.textContent = text;
       tooltip.classList.add('show');
       const rect = el.getBoundingClientRect();
+      // 使用 fixed 定位，直接用视口坐标（不需要 scrollY）
       let left = rect.left + rect.width / 2 - tooltip.offsetWidth / 2;
-      let top = rect.top - tooltip.offsetHeight - 10 + pageOffset;
+      let top = rect.top - tooltip.offsetHeight - 10;
       const vw = window.innerWidth;
       if (left < 8) left = 8;
       if (left + tooltip.offsetWidth > vw - 8) left = vw - tooltip.offsetWidth - 8;
-      if (top < pageOffset + 8) top = rect.bottom + pageOffset + 10;
+      // 如果上方空间不足，显示在下方
+      if (top < 8) top = rect.bottom + 10;
       tooltip.style.left = left + 'px';
       tooltip.style.top = top + 'px';
       activeTipEl = el;
@@ -104,23 +118,23 @@
       activeTipEl = null;
     }
     document.querySelectorAll('.hl').forEach(el => {
-      // Desktop only: hover (skip on touch)
-      el.addEventListener('mouseenter', (e) => {
-        if (e.pointerType === 'touch') return;
-        showTip(el, 0);
+      // Desktop only: hover（触摸设备跳过）
+      el.addEventListener('mouseenter', () => {
+        if (isTouchDevice) return;
+        showTip(el);
       });
       el.addEventListener('mouseleave', () => { if (activeTipEl === el) hideTip(); });
       // Touch: toggle on tap
       el.addEventListener('click', (e) => {
         e.preventDefault();
         if (activeTipEl === el) { hideTip(); return; }
-        showTip(el, window.scrollY);
+        showTip(el);
       });
       el.addEventListener('keydown', e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           if (activeTipEl === el) { hideTip(); return; }
-          showTip(el, window.scrollY);
+          showTip(el);
         }
       });
     });

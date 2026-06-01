@@ -56,12 +56,16 @@
   transition: transform 0.2s, box-shadow 0.2s;
   box-shadow: 0 4px 15px rgba(44,95,45,0.3);
 }
-.btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(44,95,45,0.4); }
+@media (hover: hover) {
+  .btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(44,95,45,0.4); }
+}
 .back-link {
   display: inline-block; color: #999; text-decoration: none; font-size: 0.95rem;
   transition: color 0.2s; margin-bottom: 0.8rem;
 }
-.back-link:hover { color: #2c5f2d; }
+@media (hover: hover) {
+  .back-link:hover { color: #2c5f2d; }
+}
 
 .theme-card.tianxia { border-left-color: #c0392b; }
 .theme-card.bubei { border-left-color: #2c5f2d; }
@@ -75,7 +79,9 @@
   text-align: center; padding: 1rem; background: #faf8f2; border-radius: 8px; min-width: 140px;
   transition: transform 0.3s;
 }
-.weather-box:hover { transform: scale(1.05); }
+@media (hover: hover) {
+  .weather-box:hover { transform: scale(1.05); }
+}
 .weather-icon { font-size: 3rem; }
 .weather-label { font-size: 0.9rem; margin-top: 0.5rem; color: #666; }
 .weather-box.yin .weather-icon { animation: rain 2s ease-in-out infinite; }

@@ -47,12 +47,16 @@
   transition: transform 0.2s, box-shadow 0.2s;
   box-shadow: 0 4px 15px rgba(192,57,43,0.3);
 }
-.btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(192,57,43,0.4); }
+@media (hover: hover) {
+  .btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(192,57,43,0.4); }
+}
 .back-link {
   display: inline-block; color: #999; text-decoration: none; font-size: 0.95rem;
   transition: color 0.2s; margin-bottom: 0.8rem;
 }
-.back-link:hover { color: #c0392b; }
+@media (hover: hover) {
+  .back-link:hover { color: #c0392b; }
+}
 
 .theme-card.xiao { border-left-color: #c0392b; }
 .theme-card.gender { border-left-color: #e67e22; }

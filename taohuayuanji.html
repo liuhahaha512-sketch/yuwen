@@ -66,12 +66,16 @@
   transition: transform 0.2s, box-shadow 0.2s;
   box-shadow: 0 4px 15px rgba(173,20,87,0.3);
 }
-.btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(173,20,87,0.4); }
+@media (hover: hover) {
+  .btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(173,20,87,0.4); }
+}
 .back-link {
   display: inline-block; color: #999; text-decoration: none; font-size: 0.95rem;
   transition: color 0.2s; margin-bottom: 0.8rem;
 }
-.back-link:hover { color: #ad1457; }
+@media (hover: hover) {
+  .back-link:hover { color: #ad1457; }
+}
 
 .theme-card.xun { border-left-color: #ad1457; }
 .theme-card.xu { border-left-color: #8bc34a; }
@@ -85,7 +89,9 @@
   text-align: center; padding: 0.8rem; background: #faf8f2; border-radius: 8px; min-width: 80px;
   font-size: 0.85rem; color: #666; transition: transform 0.3s, background 0.3s;
 }
-.path-step:hover { transform: scale(1.05); background: #fce4ec; }
+@media (hover: hover) {
+  .path-step:hover { transform: scale(1.05); background: #fce4ec; }
+}
 .path-arrow { font-size: 1.2rem; color: #ad1457; }
 
 @media (max-width: 768px) {
