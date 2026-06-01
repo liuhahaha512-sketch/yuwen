@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>桃花源记 — 互动学习</title>
+<link rel="stylesheet" href="common.css">
+<style>
+/* ===== Page-specific ===== */
+:root { --accent: #ad1457; --progress-gradient: linear-gradient(90deg, #ad1457, #e91e63); --timeline-gradient: linear-gradient(180deg, #ad1457, #e91e63, #8bc34a); }
+
+#hero {
+  min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; background: linear-gradient(180deg, #fce4ec 0%, #f8bbd0 50%, #e8e0d0 100%);
+}
+.ink-blossoms {
+  position: absolute; width: 100%; height: 100%; pointer-events: none;
+}
+.blossom {
+  position: absolute; font-size: 1.5rem; opacity: 0.25;
+  animation: fall linear infinite;
+}
+.blossom:nth-child(1) { left: 10%; animation-duration: 8s; animation-delay: 0s; }
+.blossom:nth-child(2) { left: 30%; animation-duration: 10s; animation-delay: -2s; }
+.blossom:nth-child(3) { left: 50%; animation-duration: 7s; animation-delay: -4s; }
+.blossom:nth-child(4) { left: 70%; animation-duration: 9s; animation-delay: -1s; }
+.blossom:nth-child(5) { left: 85%; animation-duration: 11s; animation-delay: -3s; }
+@keyframes fall {
+  0% { transform: translateY(-30px) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.25; }
+  90% { opacity: 0.25; }
+  100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+.ink-mountain {
+  position: absolute; bottom: 0; width: 100%; height: 200px;
+  background: linear-gradient(135deg, transparent 40%, rgba(173,20,87,0.04) 40.5%, rgba(173,20,87,0.08) 50%, transparent 50.5%),
+              linear-gradient(200deg, transparent 30%, rgba(0,0,0,0.03) 30.5%, rgba(0,0,0,0.06) 45%, transparent 45.5%);
+}
+.hero-content { text-align: center; z-index: 1; padding: 2rem; }
+.hero-content h1 {
+  font-family: "STKaiti", "KaiTi", "Kaiti SC", "Noto Serif SC", serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  color: #2d2d2d;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+.hero-content .subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: #666;
+  margin-bottom: 1rem;
+}
+.hero-content .hook {
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  color: #ad1457;
+  font-style: italic;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+.btn-start {
+  display: inline-block; padding: 14px 48px; font-size: 1.2rem;
+  background: #ad1457; color: #f5f0e8; border: none; border-radius: 8px;
+  cursor: pointer; text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(173,20,87,0.3);
+}
+.btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(173,20,87,0.4); }
+.back-link {
+  display: inline-block; color: #999; text-decoration: none; font-size: 0.95rem;
+  transition: color 0.2s; margin-bottom: 0.8rem;
+}
+.back-link:hover { color: #ad1457; }
+
+.theme-card.xun { border-left-color: #ad1457; }
+.theme-card.xu { border-left-color: #8bc34a; }
+.theme-card.zhi { border-left-color: #e67e22; }
+
+.path-demo {
+  display: flex; gap: 0.5rem; justify-content: center; align-items: center;
+  margin: 1rem 0; flex-wrap: wrap;
+}
+.path-step {
+  text-align: center; padding: 0.8rem; background: #faf8f2; border-radius: 8px; min-width: 80px;
+  font-size: 0.85rem; color: #666; transition: transform 0.3s, background 0.3s;
+}
+.path-step:hover { transform: scale(1.05); background: #fce4ec; }
+.path-arrow { font-size: 1.2rem; color: #ad1457; }
+
+@media (max-width: 768px) {
+  .hero-content h1 { font-size: 3rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar" style="width:0%"></div>
+
+<button id="nav-toggle" aria-label="打开导航">☰</button>
+
+<nav id="sidebar" aria-label="文章导航">
+  <h3>📖 导航</h3>
+  <a href="#hero">首页</a>
+  <a href="#sec-background">知人论世</a>
+  <a href="#sec-reading">逐段精读</a>
+  <a href="#sec-dict">字词词典</a>
+  <a href="#sec-devices">文学手法</a>
+  <a href="#sec-narrative">叙事地图</a>
+  <a href="#sec-themes">主题讨论</a>
+  <a href="#sec-quiz">小测验</a>
+  <a href="#sec-extend">延伸阅读</a>
+</nav>
+
+<div class="tooltip-popup" id="tooltip"></div>
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+  <div class="ink-blossoms">
+    <span class="blossom">🌸</span>
+    <span class="blossom">🌸</span>
+    <span class="blossom">🌸</span>
+    <span class="blossom">🌸</span>
+    <span class="blossom">🌸</span>
+  </div>
+  <div class="ink-cloud"></div>
+  <div class="ink-cloud"></div>
+  <div class="ink-cloud"></div>
+  <div class="ink-mountain"></div>
+  <div class="hero-content">
+    <h1>桃花源记</h1>
+    <p class="subtitle">东晋 · 陶渊明</p>
+    <p class="hook">一个渔人偶然闯入一个与世隔绝的理想世界——当他想再找到它时，却再也找不到了。</p>
+    <a href="index.html" class="back-link">← 返回篇目目录</a>
+    <br>
+    <a href="#sec-reading" class="btn-start">开始探索 ↓</a>
+  </div>
+</section>
+
+<!-- ===== MAIN ===== -->
+<div id="main">
+
+  <!-- ====== Section: 知人论世 ====== -->
+  <div class="section" id="sec-background">
+    <h2 class="section-title">知人论世</h2>
+
+    <div class="info-card">
+      <div class="info-card-header">
+        <div class="author-seal">陶</div>
+        <div>
+          <h3>陶渊明（约365—427）</h3>
+          <div class="subtitle-tag">一名潜 · 字元亮 · 浔阳柴桑（今江西九江）人</div>
+        </div>
+      </div>
+      <div class="info-card-body">
+        <ul>
+          <li>东晋末至南朝宋初期伟大的<span class="highlight-text">诗人、文学家</span>，被尊为"隐逸诗人之宗"和"田园诗派之鼻祖"</li>
+          <li>29岁开始出仕，此后十余年间几度出仕、几度归隐，最终在41岁时<span class="highlight-text">辞官归隐</span>，躬耕田园，终身不复出仕</li>
+          <li>传世名篇：《归去来兮辞》《饮酒》（"采菊东篱下，悠然见南山"）《归园田居》《五柳先生传》等</li>
+          <li>本文是《桃花源诗》前面的"记"——先以散文叙事，再以诗歌咏叹，诗与记珠联璧合</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-header">
+        <div class="author-seal">乱</div>
+        <div>
+          <h3>写作背景：乱世之中的理想之梦</h3>
+          <div class="subtitle-tag">桃花源为什么会出现？</div>
+        </div>
+      </div>
+      <div class="info-card-body">
+        <p>东晋末年（约公元420年前后），政治腐败，战乱频仍，赋役繁重，百姓流离失所。大量民众为逃避战乱和苛捐杂税，逃入深山老林，建立自给自足的聚居点——这种现象在当时是真实存在的。</p>
+        <p>陶渊明一生经历了东晋末年的动荡，亲眼目睹了百姓的苦难。他辞官归隐后，躬耕陇亩，生活清贫，对民间疾苦有切身体验。正是在这样的社会环境和个人心境下，他创作了这篇寄托着对理想社会无限向往的千古名文。</p>
+        <p>桃花源不是凭空想象的仙境，而是基于现实中逃亡山民的聚居形态，经过艺术加工而成的理想世界——它既是<span class="highlight-text">对黑暗现实的批判</span>，也是<span class="highlight-text">对理想社会的构想</span>。</p>
+        <div class="fun-fact">陶渊明辞官归隐的原因是"不为五斗米折腰"——他不愿为五斗米的俸禄向权贵弯腰鞠躬。这正是桃花源中"不受外界统治"精神在现实中的体现。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 1: 逐段精读 ====== -->
+  <div class="section" id="sec-reading">
+    <h2 class="section-title">逐段精读</h2>
+
+    <!-- Card 1: 发现桃花林 -->
+    <div class="poem-card">
+      <h3 style="color:#ad1457;margin-bottom:0.5rem;">第一段：缘溪行，发现桃花林</h3>
+      <div class="poem-original">
+        晋太元中，武陵人捕鱼为业。<span class="hl" tabindex="0" data-tip="缘：沿着，顺着。溪：小河">缘溪行</span>，忘路之远近。<span class="hl" tabindex="0" data-tip="忽逢：忽然遇到">忽逢</span>桃花林，<span class="hl" tabindex="0" data-tip="夹岸：两岸。杂：掺杂，混杂">夹岸数百步</span>，中无杂树，<span class="hl" tabindex="0" data-tip="芳草：香草。鲜美：鲜艳美丽（古义）">芳草鲜美</span>，<span class="hl" tabindex="0" data-tip="落英：落花。缤纷：繁多而纷乱的样子">落英缤纷</span>，<span class="hl" tabindex="0" data-tip="渔人甚异之：渔人对这景象感到非常惊异。异：意动用法，以……为异">渔人甚异之</span>。<span class="hl" tabindex="0" data-tip="复：又，再。前：名词作动词，向前行走">复前行</span>，欲穷其林。
+      </div>
+      <div class="poem-translation">
+        东晋太元年间，武陵郡有个人以打鱼为生。他沿着溪水划船，忘记了路程有多远。忽然遇到一片桃花林，生长在溪流两岸，长达几百步，中间没有别的树，花草遍地、鲜艳美丽，落花纷纷扬扬。渔人对这番景象感到非常惊奇，继续向前行船，想要走到那片桃林的尽头。
+      </div>
+      <div class="tip-box">注意作者的铺排——"夹岸数百步，中无杂树"，这可不是普通的桃林！纯一色的桃花，像一条通往神秘世界的粉色隧道。这正是"引人入胜"的手法，用奇景勾起读者的好奇心。</div>
+      <div class="mini-quiz" data-quiz="1">
+        <div class="question">🤔 "芳草鲜美"中的"鲜美"古义是什么？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">食物味道好</button>
+          <button class="opt-btn" data-correct="true">鲜艳美丽</button>
+          <button class="opt-btn" data-correct="false">新鲜</button>
+        </div>
+        <div class="explanation">古汉语中，"鲜美"指色彩鲜艳、美丽，多用于描写花草。现代多指食物味道好，这是一个典型的古今异义词。</div>
+      </div>
+    </div>
+
+    <!-- Card 2: 进入桃源 -->
+    <div class="poem-card">
+      <h3 style="color:#ad1457;margin-bottom:0.5rem;">第二段：发现洞口，进入桃花源</h3>
+      <div class="poem-original">
+        林尽水源，便得一山，山有小口，<span class="hl" tabindex="0" data-tip="仿佛：隐隐约约，看不真切。若：好像">仿佛若有光</span>。<span class="hl" tabindex="0" data-tip="便舍船：就丢下船">便舍船</span>，从口入。<span class="hl" tabindex="0" data-tip="初：起初，刚开始">初</span>极狭，<span class="hl" tabindex="0" data-tip="才：仅仅，只">才</span>通人。<span class="hl" tabindex="0" data-tip="复：又。行：走。数十步：几十步">复行数十步</span>，豁然开朗。
+      </div>
+      <div class="poem-translation">
+        桃花林在溪水源头处到了尽头，就出现了一座山。山上有一个小洞口，隐隐约约好像有光。渔人就丢下船，从洞口进去。起初洞口很狭窄，仅容一个人通过。又走了几十步，突然变得宽阔明亮了。
+      </div>
+      <div class="poem-original">
+        土地<span class="hl" tabindex="0" data-tip="平旷：平坦开阔">平旷</span>，屋舍俨然，有良田、美池、桑竹之属。<span class="hl" tabindex="0" data-tip="阡陌：田间小路。南北向的叫&#34;阡&#34;，东西向的叫&#34;陌&#34;。交通：交错相通（古义）">阡陌交通</span>，鸡犬相闻。<span class="hl" tabindex="0" data-tip="其中：那里面。往来：来来往往。耕作：耕种劳作">其中往来种作</span>，男女衣着，<span class="hl" tabindex="0" data-tip="悉：都，全部。如：像。外人：桃花源以外的人">悉如外人</span>。<span class="hl" tabindex="0" data-tip="黄发：代指老人。古以老人发白转黄为长寿之征。垂髫：垂下来的头发，代指小孩。读音：tiáo">黄发垂髫</span>，并<span class="hl" tabindex="0" data-tip="怡然：愉快的样子。自乐：自得其乐">怡然自乐</span>。
+      </div>
+      <div class="poem-translation">
+        （只见）土地平坦开阔，房屋整整齐齐，还有肥沃的田地、美丽的池塘、桑树竹林之类。田间小路交错相通，鸡鸣狗叫互相都能听见。里面的人们来来往往、耕种劳作，男女的穿戴都和桃花源外面的人一样。老人和小孩，都安适愉快、自得其乐。
+      </div>
+      <div class="tip-box">这就是中国人心中最经典的"理想社会"图景！没有战乱、没有压迫、人人劳作、老幼安乐。陶渊明只用了寥寥数笔——"土地平旷""鸡犬相闻""怡然自乐"，就把一个乌托邦勾勒得栩栩如生。</div>
+      <div class="mini-quiz" data-quiz="2">
+        <div class="question">🤔 "初极狭，才通人。复行数十步，豁然开朗"有什么深层含义？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">说明山洞很窄</button>
+          <button class="opt-btn" data-correct="true">象征理想世界需要穿越艰难的通道才能到达</button>
+          <button class="opt-btn" data-correct="false">说明渔人很勇敢</button>
+        </div>
+        <div class="explanation">"狭窄→豁然开朗"不仅是写实描写，更是一个隐喻：通往理想世界的道路起初狭窄逼仄，但只要坚持穿过，便会迎来一片新天地。</div>
+      </div>
+    </div>
+
+    <!-- Card 3: 村中人接待 -->
+    <div class="poem-card">
+      <h3 style="color:#ad1457;margin-bottom:0.5rem;">第三段：桃源中人接待渔人</h3>
+      <div class="poem-original">
+        <span class="hl" tabindex="0" data-tip="见渔人，乃大惊：桃源中人见到渔人，竟然非常惊讶">见渔人，乃大惊</span>，问所从来。<span class="hl" tabindex="0" data-tip="具：详细地。答：回答">具答之</span>。<span class="hl" tabindex="0" data-tip="便要：就邀请。要：通'邀'，邀请">便要还家</span>，设酒杀鸡作食。<span class="hl" tabindex="0" data-tip="村中闻有此人：村里听说来了这样一个人">村中闻有此人</span>，<span class="hl" tabindex="0" data-tip="咸：都，全。来：赶来">咸来问讯</span>。
+      </div>
+      <div class="poem-translation">
+        桃源中人看见渔人，大吃一惊，问他从哪里来。渔人详细地回答了他们。便有人邀请渔人到家里去，摆酒杀鸡做饭招待。村里听说来了这么个人，都赶来打听消息。
+      </div>
+      <div class="poem-original">
+        自云<span class="hl" tabindex="0" data-tip="先世：先人，祖先">先世</span>避秦时乱，率<span class="hl" tabindex="0" data-tip="妻子：妻子和儿女（古义）。邑人：同乡的人">妻子邑人</span>来此<span class="hl" tabindex="0" data-tip="绝境：与外界隔绝的地方（古义）">绝境</span>，不复出焉，遂与外人<span class="hl" tabindex="0" data-tip="间隔：隔离，不通音信">间隔</span>。<span class="hl" tabindex="0" data-tip="问今是何世：问现在是什么朝代">问今是何世</span>，<span class="hl" tabindex="0" data-tip="乃：竟然。无论：不要说，更不用说（古义）">乃不知有汉，无论魏晋</span>。
+      </div>
+      <div class="poem-translation">
+        他们自己说，祖先为了躲避秦朝的战乱，带领妻子儿女和同乡人来到这与世隔绝的地方，再也没有出去过，于是和外面的人断绝了来往。他们问现在是什么朝代，竟然不知道有汉朝，更不必说魏朝和晋朝了。
+      </div>
+      <div class="poem-original">
+        此人一一为<span class="hl" tabindex="0" data-tip="具言：详细地说出">具言所闻</span>，皆<span class="hl" tabindex="0" data-tip="叹惋：感叹惋惜">叹惋</span>。余人各复<span class="hl" tabindex="0" data-tip="延至其家：邀请渔人到他们自己家中。延：邀请">延至其家</span>，皆出酒食。停数日，辞去。<span class="hl" tabindex="0" data-tip="此中人语云：桃花源里的人告诉他说。语：告诉。读音：yù">此中人语云</span>："<span class="hl" tabindex="0" data-tip="不足：不值得。为：对，向。道：说">不足为外人道也</span>。"
+      </div>
+      <div class="poem-translation">
+        渔人把自己知道的事一一详细地告诉了他们，他们都感叹惋惜。其余的人又各自邀请渔人到他们家中做客，都拿出酒食招待。停留了几天后，渔人告辞离去。桃花源中的人告诉他说："不值得对外面的人提起这里啊。"
+      </div>
+      <div class="tip-box">"不足为外人道也"——这是全文的伏笔！桃源中人不想被打扰，但渔人一出洞就到处宣扬。这句看似平淡的话，暗示了桃花源终究无法在现实中长存的悲剧结局。</div>
+      <div class="mini-quiz" data-quiz="3">
+        <div class="question">🤔 "便要还家"中的"要"是什么字？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">需要的要</button>
+          <button class="opt-btn" data-correct="true">通"邀"，通假字</button>
+          <button class="opt-btn" data-correct="false">重要的要</button>
+        </div>
+        <div class="explanation">"要"在这里是通假字，通"邀"，意思是"邀请"。"便要还家"即"就邀请（渔人）到自己家里"。</div>
+      </div>
+    </div>
+
+    <!-- Card 4: 离开后再寻不得 -->
+    <div class="poem-card">
+      <h3 style="color:#ad1457;margin-bottom:0.5rem;">第四段：离开桃花源，再寻不得</h3>
+      <div class="poem-original">
+        <span class="hl" tabindex="0" data-tip="既出：已经出来后">既出</span>，<span class="hl" tabindex="0" data-tip="得其船：找到他的船">得其船</span>，便<span class="hl" tabindex="0" data-tip="扶：沿着，顺着。向：原来的，先前的">扶向路</span>，<span class="hl" tabindex="0" data-tip="处处志之：处处都做了标记。志：做标记">处处志之</span>。<span class="hl" tabindex="0" data-tip="及：等到。郡下：太守衙门">及郡下</span>，<span class="hl" tabindex="0" data-tip="诣：拜见。太守：郡的最高长官">诣太守</span>，说<span class="hl" tabindex="0" data-tip="如此：这样，指在桃花源的所见所闻">如此</span>。太守即<span class="hl" tabindex="0" data-tip="遣：派遣">遣人随其往</span>，寻向所志，<span class="hl" tabindex="0" data-tip="遂迷：竟然迷失了方向。遂：终于，竟然">遂迷</span>，不复得路。
+      </div>
+      <div class="poem-translation">
+        渔人出来以后，找到了他的船，就沿着原来的路回去，处处都做了标记。到了郡城，去拜见太守，报告了这番经历。太守立即派人跟着他前往，寻找先前做的标记，最终迷了路，再也找不到原来的路了。
+      </div>
+      <div class="tip-box">渔人违背了"不足为外人道也"的嘱托，一出洞就去告官——他为什么要这样做？也许他想邀功请赏。但桃花源却从此消失了。这是陶渊明的深意：理想世界不容于世俗的算计，一旦被权力觊觎，便荡然无存。</div>
+      <div class="mini-quiz" data-quiz="4">
+        <div class="question">🤔 "处处志之"却"遂迷，不复得路"，说明了什么？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">渔人记忆力不好</button>
+          <button class="opt-btn" data-correct="true">桃花源是虚构的，本就不存在于现实中</button>
+          <button class="opt-btn" data-correct="false">标记被破坏了</button>
+        </div>
+        <div class="explanation">渔人明明"处处志之"，却再也找不到路。这暗示桃花源本就是一个虚构的理想世界，只能在偶然的机缘下遇见，刻意追寻是找不到的。</div>
+      </div>
+    </div>
+
+    <!-- Card 5: 刘子骥寻访未果 -->
+    <div class="poem-card">
+      <h3 style="color:#ad1457;margin-bottom:0.5rem;">第五段：南阳刘子骥，高尚士也</h3>
+      <div class="poem-original">
+        南阳刘子骥，<span class="hl" tabindex="0" data-tip="高尚士：品德高尚的隐士">高尚士也</span>，闻之，<span class="hl" tabindex="0" data-tip="欣然：高兴的样子">欣然规往</span>。<span class="hl" tabindex="0" data-tip="未果：没有实现">未果</span>，<span class="hl" tabindex="0" data-tip="寻：不久。病终：因病去世">寻病终</span>。<span class="hl" tabindex="0" data-tip="后：后来。复：再。问津：问路，这里指探访、访求。津：渡口">后遂无问津者</span>。
+      </div>
+      <div class="poem-translation">
+        南阳有个叫刘子骥的人，是一位品德高尚的隐士。听说这件事后，高高兴兴地计划前往。还没有实现，不久就因病去世了。此后就再也没有人探访桃花源了。
+      </div>
+      <div class="tip-box">为什么结尾要加一个刘子骥？他是真实存在的历史人物（《晋书》有传）。陶渊明把一个真实人物写入一个虚构的故事中，虚实交错，让读者恍惚间不知桃花源究竟是真是假。这种"真假参半"的叙事手法非常高明！</div>
+      <div class="mini-quiz" data-quiz="5">
+        <div class="question">🤔 "后遂无问津者"有什么深层意味？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">人们对桃花源不感兴趣了</button>
+          <button class="opt-btn" data-correct="true">理想世界从此彻底消失，再也无人能找到</button>
+          <button class="opt-btn" data-correct="false">路已经被人走坏了</button>
+        </div>
+        <div class="explanation">"无问津者"不仅是没有人再去找，更是暗示桃花源永远消失了。一个理想社会一旦被人间的权力欲望所触碰，就不复存在——这是陶渊明对现实的深沉感慨。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 2: 字词词典 ====== -->
+  <div class="section" id="sec-dict">
+    <h2 class="section-title">字词词典</h2>
+    <p style="color:#666;margin-bottom:1rem;">悬停或点击高亮词汇查看注释。以下是重点字词汇总：</p>
+    <div class="dict-grid">
+      <div class="dict-card">
+        <span class="word">鲜美</span>
+        <div class="meaning">古义：鲜艳美丽。今义：食物味道好。"芳草鲜美"。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">交通</span>
+        <div class="meaning">古义：交错相通。今义：运输和邮电事业的总称。"阡陌交通"。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">妻子</span>
+        <div class="meaning">古义：妻子和儿女。今义：男子的配偶。"率妻子邑人"。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">绝境</span>
+        <div class="meaning">古义：与外界隔绝的地方。今义：没有出路的困境。"来此绝境"。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">无论</span>
+        <div class="meaning">古义：不要说，更不必说。今义：连词，表条件。"无论魏晋"。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">不足</span>
+        <div class="meaning">古义：不值得。今义：不够。"不足为外人道也"。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">要</span>
+        <div class="meaning">通"邀"，邀请。"便要还家"。</div>
+        <span class="tag tongjia">通假字</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">志</span>
+        <div class="meaning">名词作动词，做标记。"处处志之"。</div>
+        <span class="tag huoyong">词类活用</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">异</span>
+        <div class="meaning">形容词意动用法，以……为异。"渔人甚异之"。</div>
+        <span class="tag huoyong">词类活用</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">穷</span>
+        <div class="meaning">形容词作动词，走到……尽头。"欲穷其林"。</div>
+        <span class="tag huoyong">词类活用</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">前</span>
+        <div class="meaning">名词作动词，向前走。"复前行"。</div>
+        <span class="tag huoyong">词类活用</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">扶</span>
+        <div class="meaning">沿着，顺着。"扶向路"。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">向</span>
+        <div class="meaning">原来的，先前的。"扶向路""寻向所志"。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">寻</span>
+        <div class="meaning">不久。"寻病终"。注意不是"寻找"。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">津</span>
+        <div class="meaning">渡口。"问津"即问路，引申为探访、访求。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">黄发垂髫</span><span class="pinyin">huáng fà chuí tiáo</span>
+        <div class="meaning">借代修辞。黄发代指老人（长寿者白发转黄），垂髫代指小孩（儿童头发下垂）。</div>
+        <span class="tag huoyong">借代</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">俨然</span>
+        <div class="meaning">整齐的样子。"屋舍俨然"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">怡然</span>
+        <div class="meaning">愉快的样子。"黄发垂髫，并怡然自乐"。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 3: 文学手法 ====== -->
+  <div class="section" id="sec-devices">
+    <h2 class="section-title">文学手法探索</h2>
+
+    <div class="device-card">
+      <h3>🌫️ 虚实结合</h3>
+      <div class="explain">全文最大的特点是虚实交错：桃花林是实，桃花源是虚；渔人的经历是实，桃源的理想是虚；刘子骥是实有其人，桃花源是虚有其境。虚与实相互渗透，让读者恍惚间难辨真假。</div>
+      <div class="example">
+        实：渔人、武陵、太元、南阳刘子骥——都是真实的历史时空中的元素<br>
+        虚：桃花源本身——一个不知所在的理想世界<br>
+        → 读者被带入一种"似真似幻"的阅读体验
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>🔍 层层设疑（悬念）</h3>
+      <div class="explain">文章处处设置悬念，步步推进，牵引读者的好奇心。</div>
+      <div class="example">
+        "忘路之远近"——忘记走了多远，制造未知感<br>
+        "忽逢桃花林"——忽然遇到，出乎意料<br>
+        "仿佛若有光"——似有似无，不确定<br>
+        "遂迷，不复得路"——最终迷失，悬念到底<br>
+        "后遂无问津者"——彻底消失，永无答案
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>📐 白描手法</h3>
+      <div class="explain">用最简练的笔墨勾勒画面，不加雕饰。陶渊明以极简的语言描绘了桃花源的全貌。</div>
+      <div class="example">
+        "土地平旷，屋舍俨然，有良田、美池、桑竹之属。"<br>
+        → 只用了十几个字，就把一幅农耕社会的理想图景展现出来。这就是白描——不华丽，但有力量。
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>🔊 对比</h3>
+      <div class="explain">通过桃花源内外两个世界的强烈对照，凸显主题。</div>
+      <div class="example">
+        桃花源外：战乱频仍、赋役繁重、民不聊生（东晋末年的真实社会）<br>
+        桃花源内："黄发垂髫，并怡然自乐"——老幼安乐，人人自足<br>
+        → 对比越强烈，批判越深沉，理想越动人
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>🔍 找一找：以下句子用了什么手法？</h3>
+      <div class="find-game" id="find-game">
+        <div class="sentence" data-answer="白描">
+          <span>"土地平旷，屋舍俨然，有良田、美池、桑竹之属。"</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="白描">白描</button>
+            <button class="device-btn" data-answer="夸张">夸张</button>
+            <button class="device-btn" data-answer="比喻">比喻</button>
+          </div>
+        </div>
+        <div class="sentence" data-answer="白描">
+          <span>"阡陌交通，鸡犬相闻。"</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="白描">白描</button>
+            <button class="device-btn" data-answer="夸张">夸张</button>
+            <button class="device-btn" data-answer="比喻">比喻</button>
+          </div>
+        </div>
+        <div class="sentence" data-answer="对比">
+          <span>桃花源中"怡然自乐"与外界战乱不断、赋役繁重的对照。</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="白描">白描</button>
+            <button class="device-btn" data-answer="对比">对比</button>
+            <button class="device-btn" data-answer="比喻">比喻</button>
+          </div>
+        </div>
+        <div class="sentence" data-answer="对比">
+          <span>渔人"处处志之"与太守遣人"遂迷，不复得路"的对照。</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="白描">白描</button>
+            <button class="device-btn" data-answer="对比">对比</button>
+            <button class="device-btn" data-answer="比喻">比喻</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 4: 叙事地图 ====== -->
+  <div class="section" id="sec-narrative">
+    <h2 class="section-title">叙事地图</h2>
+
+    <h3 style="margin-bottom:1rem;">🗺️ 故事时间线</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <h4>缘溪行，忽逢桃花林</h4>
+        <div class="desc">渔人沿着溪水行船，偶然发现一片奇异的桃花林。"忘路之远近"暗示他已经离开了熟悉的世界。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>从口入，豁然开朗</h4>
+        <div class="desc">穿过狭窄的山洞，眼前突然开阔——一个与世隔绝的理想社会展现在眼前。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>桃源中人热情款待</h4>
+        <div class="desc">"便要还家，设酒杀鸡作食"——桃源人淳朴好客。渔人讲述外面的世界，众人"叹惋"。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>辞别离去，"不足为外人道"</h4>
+        <div class="desc">桃源人请求渔人不要对外人说——但渔人出洞后立刻违背了诺言。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>太守遣人寻访，遂迷</h4>
+        <div class="desc">渔人告官，太守派人按标记寻找，却迷失了方向，再也找不到路。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>刘子骥规往未果，后遂无问津者</h4>
+        <div class="desc">高尚士刘子骥计划前往，未成行就病逝了。从此再也没有人去找桃花源——理想世界永远消失了。</div>
+      </div>
+    </div>
+
+    <h3 style="margin:2rem 0 1rem;">📊 叙事节奏</h3>
+    <p style="color:#666;margin-bottom:1rem;font-size:0.95rem;">
+      作者对每个阶段的着墨——发现过程写得最细，消失过程写得最快——详略之间暗含深意。
+    </p>
+    <div class="chart-bar-container">
+      <div class="chart-row">
+        <div class="label">发现桃林</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:20%;background:#ad1457"></div></div>
+        <div class="count">5句</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">进入桃源</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:30%;background:#e91e63"></div></div>
+        <div class="count">7句</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">桃源做客</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:45%;background:#c0392b"></div></div>
+        <div class="count">10句</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">离去再寻</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:25%;background:#e67e22"></div></div>
+        <div class="count">6句</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">刘子骥结局</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:15%;background:#8bc34a"></div></div>
+        <div class="count">3句</div>
+      </div>
+    </div>
+    <div class="tip-box" style="margin-top:1rem;">
+      桃源做客部分着墨最多，因为这正是陶渊明最想展示的理想社会图景——人人热情好客，老少安居乐业。而消失部分写得最简洁——理想一旦破碎，消失得极快。这就是详略的艺术。
+    </div>
+
+    <h3 style="margin:2rem 0 1rem;">🗺️ 渔人的行踪</h3>
+    <div class="path-demo">
+      <div class="path-step">武陵郡<br><small>以捕鱼为业</small></div>
+      <div class="path-arrow">→</div>
+      <div class="path-step">缘溪行<br><small>忘路远近</small></div>
+      <div class="path-arrow">→</div>
+      <div class="path-step">桃花林<br><small>落英缤纷</small></div>
+      <div class="path-arrow">→</div>
+      <div class="path-step">山洞口<br><small>仿佛有光</small></div>
+      <div class="path-arrow">→</div>
+      <div class="path-step" style="background:#fce4ec;border:1px solid #f48fb1;">桃花源<br><small>豁然开朗</small></div>
+      <div class="path-arrow">→</div>
+      <div class="path-step">扶向路<br><small>处处志之</small></div>
+      <div class="path-arrow">→</div>
+      <div class="path-step">遂迷<br><small>不复得路</small></div>
+    </div>
+  </div>
+
+  <!-- ====== Section 5: 主题讨论 ====== -->
+  <div class="section" id="sec-themes">
+    <h2 class="section-title">主题讨论</h2>
+
+    <div class="theme-card xun">
+      <h3>🌸 "世外桃源"：一个不存在的理想世界</h3>
+      <div class="evidence">"土地平旷，屋舍俨然，有良田、美池、桑竹之属……黄发垂髫，并怡然自乐。"</div>
+      <p class="prompt-q">思考：桃花源中"不知有汉，无论魏晋"——没有朝代的更替，没有统治者的压迫，人们自给自足。你认为这真的是一个完美的社会吗？它有没有什么缺憾？</p>
+      <div class="notes-area" data-key="xun">
+        <textarea placeholder="写下你的想法……"></textarea>
+        <button class="save-btn">保存笔记</button>
+        <span class="saved-msg">已保存 ✓</span>
+      </div>
+    </div>
+
+    <div class="theme-card xu">
+      <h3>🌫️ 桃花源到底是真的还是假的？</h3>
+      <div class="evidence">"遂迷，不复得路。""未果，寻病终。后遂无问津者。"</div>
+      <p class="prompt-q">思考：陶渊明为什么要把桃花源写得"似真似假"？渔人明明"处处志之"，为什么却再也找不到？你觉得作者是想让读者相信桃花源的存在，还是故意让它成为一个谜？</p>
+      <div class="notes-area" data-key="xu">
+        <textarea placeholder="写下你的想法……"></textarea>
+        <button class="save-btn">保存笔记</button>
+        <span class="saved-msg">已保存 ✓</span>
+      </div>
+    </div>
+
+    <div class="theme-card zhi">
+      <h3>🚪 "不足为外人道也"——为什么理想不能被打扰？</h3>
+      <div class="evidence">"此中人语云：'不足为外人道也。'"</div>
+      <p class="prompt-q">思考：桃源中人请求渔人保密，但渔人一出洞就去告官。你觉得渔人做错了什么？在今天的社会，有没有类似"不足为外人道"的情况——一些美好的事物一旦被功利之心触碰就消失了？</p>
+      <div class="notes-area" data-key="zhi">
+        <textarea placeholder="写下你的想法……"></textarea>
+        <button class="save-btn">保存笔记</button>
+        <span class="saved-msg">已保存 ✓</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 6: 小测验 ====== -->
+  <div class="section" id="sec-quiz">
+    <h2 class="section-title">综合小测验</h2>
+    <p style="color:#666;margin-bottom:1.5rem;">检验一下你的学习成果吧！</p>
+
+    <div id="quiz-container">
+      <div class="quiz-item" data-quiz-q="1">
+        <span class="q-num">Q1.</span>
+        <div class="q-text">《桃花源记》的作者是谁？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">王维</div>
+          <div class="q-opt" data-correct="true">陶渊明</div>
+          <div class="q-opt" data-correct="false">谢灵运</div>
+          <div class="q-opt" data-correct="false">曹操</div>
+        </div>
+        <div class="q-explain">陶渊明（约365—427），一名潜，字元亮，东晋末至南朝宋初期伟大的诗人、文学家，被尊为"隐逸诗人之宗"和"田园诗派之鼻祖"。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="2">
+        <span class="q-num">Q2.</span>
+        <div class="q-text">"芳草鲜美"中"鲜美"的古义是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">食物味道好</div>
+          <div class="q-opt" data-correct="true">鲜艳美丽</div>
+          <div class="q-opt" data-correct="false">新鲜</div>
+          <div class="q-opt" data-correct="false">芬芳清香</div>
+        </div>
+        <div class="q-explain">古汉语中"鲜美"指色彩鲜艳美丽，多描写花草。今义多指食物味道好，是古今异义词。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="3">
+        <span class="q-num">Q3.</span>
+        <div class="q-text">"率妻子邑人来此绝境"中"妻子"的古义是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">男子的配偶</div>
+          <div class="q-opt" data-correct="true">妻子和儿女</div>
+          <div class="q-opt" data-correct="false">妻子和父母</div>
+          <div class="q-opt" data-correct="false">家庭</div>
+        </div>
+        <div class="q-explain">古汉语中"妻子"指妻子和儿女，是两个词的合称。现代"妻子"仅指男子的配偶。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="4">
+        <span class="q-num">Q4.</span>
+        <div class="q-text">"无论魏晋"中"无论"的古义是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">不管、不分（现代用法）</div>
+          <div class="q-opt" data-correct="true">不要说，更不必说</div>
+          <div class="q-opt" data-correct="false">没有办法</div>
+          <div class="q-opt" data-correct="false">不论是非</div>
+        </div>
+        <div class="q-explain">古汉语中"无论"是"不要说"的意思，"无论魏晋"即"更不用说魏和晋了"。现代"无论"是连词，表条件关系。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="5">
+        <span class="q-num">Q5.</span>
+        <div class="q-text">"便要还家"中"要"的用法是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="true">通假字，通"邀"，邀请</div>
+          <div class="q-opt" data-correct="false">需要</div>
+          <div class="q-opt" data-correct="false">重要</div>
+          <div class="q-opt" data-correct="false">要求</div>
+        </div>
+        <div class="q-explain">"要"在这里是通假字，通"邀"，意思是"邀请"。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="6">
+        <span class="q-num">Q6.</span>
+        <div class="q-text">"处处志之"中"志"的用法是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">名词，志向</div>
+          <div class="q-opt" data-correct="true">名词作动词，做标记</div>
+          <div class="q-opt" data-correct="false">名词，标志</div>
+          <div class="q-opt" data-correct="false">形容词，有志向的</div>
+        </div>
+        <div class="q-explain">"志"在这里是名词活用为动词，意思是"做标记"。"处处志之"即处处都做了标记。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="7">
+        <span class="q-num">Q7.</span>
+        <div class="q-text">"后遂无问津者"中"津"的意思是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">渡口的水</div>
+          <div class="q-opt" data-correct="true">渡口</div>
+          <div class="q-opt" data-correct="false">兴趣</div>
+          <div class="q-opt" data-correct="false">道路</div>
+        </div>
+        <div class="q-explain">"津"的本义是渡口。"问津"即问路，引申为探访、访求。"无问津者"指再没有人去探访桃花源。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="8">
+        <span class="q-num">Q8.</span>
+        <div class="q-text">陶渊明写《桃花源记》的主要目的是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">记录一个真实发生的事件</div>
+          <div class="q-opt" data-correct="false">描写武陵的风景</div>
+          <div class="q-opt" data-correct="true">寄托对理想社会的向往，批判黑暗现实</div>
+          <div class="q-opt" data-correct="false">教人如何找到隐居之地</div>
+        </div>
+        <div class="q-explain">陶渊明借桃花源的虚构，寄托了自己对理想社会的向往，同时也隐含着对东晋末年政治腐败、战乱不断的批判。桃花源不是纪实，而是理想。</div>
+      </div>
+    </div>
+
+    <div id="quiz-result">
+      <div class="score" id="quiz-score"></div>
+      <div class="msg" id="quiz-msg"></div>
+      <button class="btn-start" id="btn-reset-quiz" style="margin-top:1.5rem;font-size:1rem;padding:10px 32px;">重新测验</button>
+    </div>
+  </div>
+
+  <!-- ====== Section: 延伸阅读 ====== -->
+  <div class="section extend-section" id="sec-extend">
+    <h2 class="section-title">延伸阅读</h2>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">🌾</span>
+        <h3>陶渊明的田园诗——另一种理想生活的表达</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>桃花源是用散文构建的理想世界，而陶渊明的田园诗则用韵文表达了同样的精神追求：</p>
+          <blockquote>"结庐在人境，而无车马喧。问君何能尔？心远地自偏。采菊东篱下，悠然见南山。"</blockquote>
+          <p>——《饮酒·其五》。桃花源是一个不可企及的乌托邦，而田园诗中的生活则是陶渊明真实经历的——辞官归隐，躬耕田园。一个虚幻，一个真实，但都指向同一个精神家园。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">🗺️</span>
+        <h3>"乌托邦"的世界传统——桃花源与西方的理想国</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>桃花源是人类历史上最早的"乌托邦"想象之一。世界各地都有类似的理想世界叙事：</p>
+          <ul style="list-style:none;padding:0;">
+            <li>· <b>桃花源</b>（中国，约421年）—— 陶渊明笔下的农耕乌托邦，没有统治者，人人自足</li>
+            <li>· <b>理想国</b>（古希腊，约前375年）—— 柏拉图构想的哲人统治的完美城邦</li>
+            <li>· <b>乌托邦</b>（英国，1516年）—— 托马斯·莫尔虚构的财产公有、人人平等的岛国</li>
+            <li>· <b>伊甸园</b>（希伯来传统）—— 人类最初的乐土，因堕落而失去</li>
+          </ul>
+          <p>有趣的是，桃花源与以上所有理想世界都不同——它不是由哲人设计的政治蓝图，而是一个普通农民聚居的朴素田园。没有哲学家、没有统治者、没有法律，只有土地、房屋和人情——这就是陶渊明式的中国理想。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">📝</span>
+        <h3>《桃花源诗》——被忽视的另一半</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>大多数人只知道《桃花源记》，但陶渊明在后面还附了一首《桃花源诗》——其实这首诗才是他真正的创作目的，"记"只是诗的"序"：</p>
+          <blockquote>"嬴氏乱天纪，贤者避其世。黄绮之商山，伊人亦云逝。"</blockquote>
+          <p>这首诗直接点明了桃花源的寓意：秦朝（嬴氏）扰乱了天下秩序，贤能之人避世隐居。它把桃花源的故事进一步升华为一种政治批判和隐逸理想。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">🏔️</span>
+        <h3>现实中的"桃花源"在哪里？</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>历史上很多地方都自称是"真正的桃花源"——湖南常德桃源县、重庆酉阳、江西庐山、湖北十堰等地都有"桃花源景区"。学术界也有不同说法：</p>
+          <ul style="list-style:none;padding:0;">
+            <li>· <b>湖南桃源县</b>——最普遍的说法，地处武陵山区，与文中"武陵人"相符</li>
+            <li>· <b>重庆酉阳</b>——有天然溶洞，洞口狭窄，洞内开阔，与文中描写高度相似</li>
+            <li>· <b>江西庐山康王谷</b>——陶渊明隐居地附近，他可能以此为原型</li>
+          </ul>
+          <p>但也许，桃花源本来就不在地图上——它是陶渊明心中的一面镜子，照出的是人们对安宁、自由、平等生活的永恒向往。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-nav">
+    <a href="index.html">← 返回篇目目录</a>
+    <a href="mulanci.html">上一篇：木兰辞 →</a>
+  </div>
+  <p>桃花源记互动学习 · 适合中学生使用</p>
+  <p style="margin-top:0.3rem;">基于东晋陶渊明《桃花源记》制作</p>
+</footer>
+
+<script>
+window.PAGE_CONFIG = {
+  accent: '#ad1457',
+  storagePrefix: 'thyj_note_',
+  quizName: '桃花源记'
+};
+</script>
+<script src="common.js" defer></script>
+</body>
+</html>
