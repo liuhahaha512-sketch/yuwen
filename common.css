@@ -48,6 +48,7 @@ body {
   padding: 0; z-index: 999;
   transform: translateX(-100%); transition: transform 0.3s ease;
   overflow-y: auto;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 #sidebar.open { transform: translateX(0); }
@@ -143,6 +144,9 @@ a:focus-visible, button:focus-visible, textarea:focus-visible,
 }
 .poem-original .hl {
   color: var(--accent, #c0392b); cursor: help;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  border-bottom: 2px dotted rgba(192, 57, 43, 0.4);
   border-bottom: 2px dotted color-mix(in srgb, var(--accent, #c0392b) 40%, transparent);
   position: relative; transition: background 0.2s, color 0.2s;
 }
@@ -151,12 +155,14 @@ a:focus-visible, button:focus-visible, textarea:focus-visible,
   outline-offset: 2px;
   border-radius: 2px;
 }
-.poem-original .hl:hover { background: color-mix(in srgb, var(--accent, #c0392b) 6%, transparent); }
+.poem-original .hl:hover { background: rgba(192, 57, 43, 0.06); background: color-mix(in srgb, var(--accent, #c0392b) 6%, transparent); }
 
 .poem-translation {
   font-size: 1rem; color: #555; padding: 1rem 1.2rem;
+  border-left: 3px solid rgba(192, 57, 43, 0.6);
   border-left: 3px solid color-mix(in srgb, var(--accent, #c0392b) 60%, transparent);
   margin-bottom: 1rem;
+  background: rgba(192, 57, 43, 0.06);
   background: color-mix(in srgb, var(--accent, #c0392b) 6%, #faf8f2); border-radius: 0 10px 10px 0;
 }
 
@@ -310,7 +316,7 @@ a:focus-visible, button:focus-visible, textarea:focus-visible,
 /* Notes area */
 .notes-area textarea {
   width: 100%; min-height: 80px; padding: 0.8rem 1rem; border: 1.5px solid #e0d5c5;
-  border-radius: 10px; font-size: 1rem; font-family: inherit; resize: vertical;
+  border-radius: 10px; font-size: 16px; font-family: inherit; resize: vertical;
   background: #faf8f2; transition: border-color 0.2s, box-shadow 0.2s;
 }
 .notes-area textarea:focus { outline: none; border-color: var(--accent, #c0392b); box-shadow: 0 0 0 3px rgba(192,57,43,0.1); }

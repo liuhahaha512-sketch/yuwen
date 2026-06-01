@@ -10,7 +10,8 @@
 :root { --accent: #2c5f2d; --progress-gradient: linear-gradient(90deg, #2c5f2d, #3498db); --timeline-gradient: linear-gradient(180deg, #2c5f2d, #3498db, #c0392b); }
 
 #hero {
-  min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 100vh; min-height: -webkit-fill-available; min-height: 100dvh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
   position: relative; overflow: hidden; background: linear-gradient(180deg, #f5f0e8 0%, #e8e0d0 100%);
 }
 .ink-mountain {

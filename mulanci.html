@@ -10,7 +10,8 @@
 :root { --accent: #c0392b; --progress-gradient: linear-gradient(90deg, #c0392b, #e67e22); --timeline-gradient: linear-gradient(180deg, #c0392b, #e67e22, #2c5f2d); }
 
 #hero {
-  min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 100vh; min-height: -webkit-fill-available; min-height: 100dvh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
   position: relative; overflow: hidden; background: linear-gradient(180deg, #f5f0e8 0%, #e8e0d0 100%);
 }
 .ink-mountain {
@@ -59,17 +60,17 @@
 
 .rabbit-demo {
   display: flex; gap: 2rem; justify-content: center; align-items: flex-end;
-  margin: 1rem 0;
+  margin: 1rem 0; flex-wrap: wrap;
 }
 .rabbit-box {
   text-align: center; padding: 1rem; background: #faf8f2; border-radius: 8px; min-width: 120px;
 }
 .rabbit-icon { font-size: 3rem; }
 .rabbit-label { font-size: 0.9rem; margin-top: 0.5rem; color: #666; }
-.rabbit-box.male .rabbit-icon { animation: 扑朔 1s ease-in-out infinite; }
-.rabbit-box.female .rabbit-icon { animation: 迷离 1.5s ease-in-out infinite; }
-@keyframes 扑朔 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px) rotate(-5deg); } }
-@keyframes 迷离 { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.92); } }
+.rabbit-box.male .rabbit-icon { animation: pushuo 1s ease-in-out infinite; }
+.rabbit-box.female .rabbit-icon { animation: mili 1.5s ease-in-out infinite; }
+@keyframes pushuo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px) rotate(-5deg); } }
+@keyframes mili { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.92); } }
 
 @media (max-width: 768px) {
   .hero-content h1 { font-size: 3rem; }
@@ -825,8 +826,8 @@
 <footer>
   <div class="footer-nav">
     <a href="index.html">← 返回篇目目录</a>
-    <a href="yueyanglouji.html">下一篇：岳阳楼记 →</a>
-    <a href="taohuayuanji.html">下一篇：桃花源记 →</a>
+    <a href="yueyanglouji.html">相关文章：岳阳楼记 →</a>
+    <a href="taohuayuanji.html">相关文章：桃花源记 →</a>
   </div>
   <p>木兰辞互动学习 · 适合中学生使用</p>
   <p style="margin-top:0.3rem;">基于北朝乐府民歌《木兰辞》制作</p>

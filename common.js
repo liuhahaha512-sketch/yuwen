@@ -104,8 +104,11 @@
       activeTipEl = null;
     }
     document.querySelectorAll('.hl').forEach(el => {
-      // Desktop: hover
-      el.addEventListener('mouseenter', () => { showTip(el, 0); });
+      // Desktop only: hover (skip on touch)
+      el.addEventListener('mouseenter', (e) => {
+        if (e.pointerType === 'touch') return;
+        showTip(el, 0);
+      });
       el.addEventListener('mouseleave', () => { if (activeTipEl === el) hideTip(); });
       // Touch: toggle on tap
       el.addEventListener('click', (e) => {
