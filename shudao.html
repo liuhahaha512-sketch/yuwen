@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>蜀道难 — 互动学习</title>
+<link rel="stylesheet" href="common.css">
+<style>
+/* ===== Page-specific ===== */
+:root { --accent: #283593; --progress-gradient: linear-gradient(90deg, #283593, #5c6bc0); --timeline-gradient: linear-gradient(180deg, #283593, #5c6bc0, #c0392b); }
+
+#hero {
+  min-height: 100vh; min-height: -webkit-fill-available; min-height: 100dvh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; background: linear-gradient(180deg, #f5f0e8 0%, #e8e0d0 100%);
+}
+.ink-mountain {
+  position: absolute; bottom: 0; width: 100%; height: 200px;
+  background: linear-gradient(135deg, transparent 40%, rgba(0,0,0,0.04) 40.5%, rgba(0,0,0,0.08) 50%, transparent 50.5%),
+              linear-gradient(200deg, transparent 30%, rgba(0,0,0,0.03) 30.5%, rgba(0,0,0,0.06) 45%, transparent 45.5%);
+}
+.mountain-scene {
+  position: absolute; bottom: 80px; width: 100%; height: 120px;
+  display: flex; justify-content: center; gap: 20px;
+}
+.mountain-peak {
+  width: 80px; background: linear-gradient(180deg, rgba(40,53,99,0.15) 0%, rgba(40,53,99,0.05) 100%);
+  border-radius: 50% 50% 0 0;
+}
+.mountain-peak:nth-child(1) { height: 100px; }
+.mountain-peak:nth-child(2) { height: 80px; }
+.mountain-peak:nth-child(3) { height: 60px; }
+.hero-content { text-align: center; z-index: 1; padding: 2rem; }
+.hero-content h1 {
+  font-family: "STKaiti", "KaiTi", "Kaiti SC", "Noto Serif SC", serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  color: #2d2d2d;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+.hero-content .subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: #666;
+  margin-bottom: 1rem;
+}
+.hero-content .hook {
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  color: #283593;
+  font-style: italic;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+.btn-start {
+  display: inline-block; padding: 14px 48px; font-size: 1.2rem;
+  background: #283593; color: #f5f0e8; border: none; border-radius: 8px;
+  cursor: pointer; text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(40,53,99,0.3);
+}
+@media (hover: hover) {
+  .btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(40,53,99,0.4); }
+}
+.back-link {
+  display: inline-block; color: #999; text-decoration: none; font-size: 0.95rem;
+  transition: color 0.2s; margin-bottom: 0.8rem;
+}
+@media (hover: hover) {
+  .back-link:hover { color: #283593; }
+}
+
+.theme-card.xian { border-left-color: #c0392b; }
+.theme-card.zhuang { border-left-color: #283593; }
+.theme-card.you { border-left-color: #5c6bc0; }
+
+@media (max-width: 768px) {
+  .hero-content h1 { font-size: 3rem; }
+  .mountain-scene { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar" style="width:0%"></div>
+
+<button id="nav-toggle" aria-label="打开导航">☰</button>
+
+<nav id="sidebar" aria-label="文章导航">
+  <h3>📖 导航</h3>
+  <a href="#hero">首页</a>
+  <a href="#sec-background">知人论世</a>
+  <a href="#sec-reading">逐段精读</a>
+  <a href="#sec-dict">字词词典</a>
+  <a href="#sec-devices">文学手法</a>
+  <a href="#sec-structure">结构地图</a>
+  <a href="#sec-themes">主题讨论</a>
+  <a href="#sec-quiz">小测验</a>
+  <a href="#sec-extend">延伸阅读</a>
+</nav>
+
+<div class="tooltip-popup" id="tooltip"></div>
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+  <div class="ink-cloud"></div>
+  <div class="ink-cloud"></div>
+  <div class="ink-cloud"></div>
+  <div class="ink-mountain"></div>
+  <div class="mountain-scene">
+    <div class="mountain-peak"></div>
+    <div class="mountain-peak"></div>
+    <div class="mountain-peak"></div>
+  </div>
+  <div class="hero-content">
+    <h1>蜀道难</h1>
+    <p class="subtitle">盛唐 · 李白</p>
+    <p class="hook">"蜀道之难，难于上青天"——一首让贺知章惊呼"谪仙人"的奇诗。</p>
+    <a href="index.html" class="back-link">← 返回篇目目录</a>
+    <br>
+    <a href="#sec-reading" class="btn-start">开始探索 ↓</a>
+  </div>
+</section>
+
+<!-- ===== MAIN ===== -->
+<div id="main">
+
+  <!-- ====== Section: 知人论世 ====== -->
+  <div class="section" id="sec-background">
+    <h2 class="section-title">知人论世</h2>
+
+    <div class="info-card">
+      <div class="info-card-header">
+        <div class="author-seal">李</div>
+        <div>
+          <h3>李白（701—762）</h3>
+          <div class="subtitle-tag">字太白 · 号青莲居士 · 祖籍陇西</div>
+        </div>
+      </div>
+      <div class="info-card-body">
+        <ul>
+          <li>唐代最伟大的浪漫主义诗人，被后人誉为<span class="highlight-text">"诗仙"</span></li>
+          <li>出生于西域碎叶城（今吉尔吉斯斯坦），五岁迁居四川，在蜀地成长</li>
+          <li>诗风豪放飘逸，想象奇特，常用<span class="highlight-text">夸张、比喻、神话传说</span>等手法</li>
+          <li>代表作：《将进酒》《蜀道难》《梦游天姥吟留别》《行路难》等</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-header">
+        <div class="author-seal">谪仙</div>
+        <div>
+          <h3>写作背景：一首诗换来一个称号</h3>
+          <div class="subtitle-tag">"谪仙人"是怎么来的？</div>
+        </div>
+      </div>
+      <div class="info-card-body">
+        <p>李白初到长安时，拜访前辈诗人贺知章，献上《蜀道难》。贺知章读完大为震惊，惊呼：<span class="highlight-text">"公非人世之人，可不是太白星精耶？"</span>——你不是凡人，难道是太白金星下凡？</p>
+        <p>贺知章称李白为"谪仙人"——从天上被贬谪到人间的仙人。从此，李白便有了"诗仙"的美誉。</p>
+        <p>一首诗，换来一个称号，这在文学史上极为罕见。可见《蜀道难》的艺术感染力有多么惊人。</p>
+        <div class="fun-fact">据说贺知章读完《蜀道难》后，解下身上的金龟换酒，与李白痛饮——这就是著名的"金龟换酒"典故。</div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-header">
+        <div class="author-seal">蜀</div>
+        <div>
+          <h3>蜀道之险——真实与想象</h3>
+          <div class="subtitle-tag">李白写的蜀道有多险？</div>
+        </div>
+      </div>
+      <div class="info-card-body">
+        <p>"蜀道"指通往四川的道路，自古以险峻著称。秦岭、大巴山横亘其间，悬崖峭壁，深谷急流，道路艰险异常。</p>
+        <p>李白在蜀地成长，对蜀道的险峻有切身体会。但他笔下的蜀道，既有真实的地理险阻，更有夸张的艺术想象——<span class="highlight-text">他用神话传说、夸张手法，把蜀道写成了一条"连鸟兽都难以飞越"的奇险之路</span>。</p>
+        <p>这不是地理志，而是诗人心中的蜀道——比真实更震撼。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 1: 逐段精读 ====== -->
+  <div class="section" id="sec-reading">
+    <h2 class="section-title">逐段精读</h2>
+
+    <!-- Card 1: 开篇惊叹 -->
+    <div class="poem-card">
+      <h3 style="color:#283593;margin-bottom:0.5rem;">第一部分：开篇惊叹——蜀道之难</h3>
+      <div class="poem-original">
+        <span class="hl" tabindex="0" data-tip="噫吁嚱：惊叹词，相当于现代的'哎呀！'。读音 yī xū xī。巇：读音 hū，危险。高危：高而险">噫吁嚱，危乎高哉</span>！
+      </div>
+      <div class="poem-translation">
+        噫吁嚱！多么危险多么高啊！
+      </div>
+      <div class="poem-original">
+        <span class="hl" tabindex="0" data-tip="蜀道：通往四川的道路。之：的。难：艰险。于：比。上：登。青天：蓝天">蜀道之难，难于上青天</span>！
+      </div>
+      <div class="poem-translation">
+        蜀道的艰险，比登上青天还要难！
+      </div>
+      <div class="poem-original">
+        蚕丛及鱼凫，开国何茫然！<span class="hl" tabindex="0" data-tip="尔来：从那以来。四万八千岁：夸张的说法，形容时间久远。不：没有。与：和。秦：秦地。塞：边塞，边境">尔来四万八千岁，不与秦塞通人烟</span>。
+      </div>
+      <div class="poem-translation">
+        蚕丛和鱼凫（古代蜀国的开国君王），开国的事迹多么茫然！从那以来四万八千年，不和秦地的边塞通人烟。
+      </div>
+      <div class="poem-original">
+        西当太白有鸟道，可以横绝峨眉巅。<span class="hl" tabindex="0" data-tip="地崩山摧：山崩地裂。壮士：指传说中的五个大力士。死：牺牲。然后：这样之后。天梯：高峻的山路。石栈：在悬崖上凿石架木修成的栈道">地崩山摧壮士死，然后天梯石栈相钩连</span>。
+      </div>
+      <div class="poem-translation">
+        西面当着太白山，只有鸟儿飞行的道路，可以从那横渡到峨眉山顶。直到山崩地裂、五位壮士牺牲，然后才有了天梯石栈相互钩连的道路。
+      </div>
+      <div class="tip-box">开篇就是一声惊叹"噫吁嚱"！然后立即点明主题："蜀道之难，难于上青天"——这句话在诗中反复出现，成为全诗的主旋律。</div>
+      <div class="mini-quiz" data-quiz="1">
+        <div class="question">🤔 "蜀道之难，难于上青天"用了什么修辞手法？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="true">夸张</button>
+          <button class="opt-btn" data-correct="false">比喻</button>
+          <button class="opt-btn" data-correct="false">对比</button>
+        </div>
+        <div class="explanation">"难于上青天"是极度的夸张——登天怎么可能比走山路更难？但正是这种夸张，给人强烈的震撼感。</div>
+      </div>
+    </div>
+
+    <!-- Card 2: 五丁开山 -->
+    <div class="poem-card">
+      <h3 style="color:#283593;margin-bottom:0.5rem;">神话传说：五丁开山</h3>
+      <div class="poem-original">
+        地崩山摧壮士死，然后天梯石栈相钩连。
+      </div>
+      <div class="poem-translation">
+        山崩地裂壮士牺牲，然后天梯石栈才钩连相通。
+      </div>
+      <div class="tip-box">这句诗引用了"五丁开山"的神话传说。相传蜀王派五个大力士去迎娶秦王送的女儿，途中遇到一条大蛇钻入山洞，五壮士拽住蛇尾，结果山崩地裂，五位壮士和蜀王的女儿都被压死——蜀道才从此开通。李白用这个神话，渲染蜀道开通的艰难和牺牲。</div>
+      <div class="mini-quiz" data-quiz="2">
+        <div class="question">🤔 "地崩山摧壮士死"引用的是什么？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">真实的历史事件</button>
+          <button class="opt-btn" data-correct="true">五丁开山的神话传说</button>
+          <button class="opt-btn" data-correct="false">李白自己的经历</button>
+        </div>
+        <div class="explanation">这句引用了古代蜀地的神话"五丁开山"——五个壮士为了开通蜀道而牺牲，增添了神秘色彩和悲壮气氛。</div>
+      </div>
+    </div>
+
+    <!-- Card 3: 上有六龙 -->
+    <div class="poem-card">
+      <h3 style="color:#283593;margin-bottom:0.5rem;">第二部分：蜀道之险——高不可攀</h3>
+      <div class="poem-original">
+        <span class="hl" tabindex="0" data-tip="上有：上面有。六龙：六条龙。回：回转。日：太阳。高标：最高的山峰">上有六龙回日之高标</span>，<span class="hl" tabindex="0" data-tip="下有：下面有。冲波：冲激波浪。逆折：曲折回旋。回川：回旋的川流">下有冲波逆折之回川</span>。
+      </div>
+      <div class="poem-translation">
+        上面有六龙回转日车的高峰，下面有冲波逆折回旋的川流。
+      </div>
+      <div class="poem-original">
+        黄鹤之飞尚不得过，猿猱欲度愁攀援。<span class="hl" tabindex="0" data-tip="青泥：青泥岭。何：多么。盘盘：曲折的样子。百步九折：走一百步要拐九道弯。萦岩峦：缠绕着山岩山峰">青泥何盘盘，百步九折萦岩峦</span>。
+      </div>
+      <div class="poem-translation">
+        黄鹤那样善飞也飞不过去，猿猱想要越过也愁于攀援。青泥岭多么曲折，走一百步就要拐九道弯，缠绕着山岩山峰。
+      </div>
+      <div class="poem-original">
+        <span class="hl" tabindex="0" data-tip="扪：触摸。参：参星。历：经过。井：井星。胁息：屏住呼吸。膺：胸口">扪参历井仰胁息，以手抚膺坐长叹</span>。
+      </div>
+      <div class="poem-translation">
+        摸着参星、经过井星，仰头屏住呼吸，用手抚摸着胸口坐下来长叹。
+      </div>
+      <div class="tip-box">李白用神话和夸张渲染蜀道之高：连太阳（六龙拉着的日车）都被挡住，黄鹤飞不过，猿猴愁攀援。行人走在山路上，仿佛能摸到天上的星星（参星、井星）！这是何等的夸张！</div>
+      <div class="mini-quiz" data-quiz="3">
+        <div class="question">🤔 "黄鹤之飞尚不得过"说明蜀道有什么特点？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="true">极高，连善飞的鸟都飞不过</button>
+          <button class="opt-btn" data-correct="false">路很窄，鸟飞不过去</button>
+          <button class="opt-btn" data-correct="false">风太大，鸟飞不了</button>
+        </div>
+        <div class="explanation">黄鹤是传说中善飞的大鸟，"尚不得过"说明山峰极高，连最善飞的鸟都无法越过。这是用夸张手法渲染蜀道之高。</div>
+      </div>
+    </div>
+
+    <!-- Card 4: 畏途巉岩 -->
+    <div class="poem-card">
+      <h3 style="color:#283593;margin-bottom:0.5rem;">第三部分：蜀道之险——令人胆寒</h3>
+      <div class="poem-original">
+        问君西游何时还？畏途<span class="hl" tabindex="0" data-tip="巉岩：险峻的山岩。读音 chán yán">巉岩</span>不可攀。
+      </div>
+      <div class="poem-translation">
+        问你西游什么时候回来？可怕的道路险峻的山岩不可攀登。
+      </div>
+      <div class="poem-original">
+        但见悲鸟号古木，雄飞雌从绕林间。又闻子规啼夜月，愁空山。
+      </div>
+      <div class="poem-translation">
+        只看见悲鸟在古树上哀号，雄鸟飞雌鸟跟随绕在林间。又听见子规鸟在夜月下啼叫，愁绪弥漫空山。
+      </div>
+      <div class="poem-original">
+        蜀道之难，难于上青天，使人听此<span class="hl" tabindex="0" data-tip="凋：凋谢，这里指脸色变得惨白。朱颜：红润的面容">凋朱颜</span>！
+      </div>
+      <div class="poem-translation">
+        蜀道的艰险，比登上青天还要难，使人听了这些话脸色都变得惨白！
+      </div>
+      <div class="tip-box">这一段从视觉转到听觉：悲鸟哀号、子规啼夜——子规就是杜鹃鸟，叫声凄惨，据说蜀王杜宇死后化为杜鹃。这些声音渲染出蜀道的凄凉恐怖，让人"凋朱颜"——吓得脸色惨白。</div>
+      <div class="mini-quiz" data-quiz="4">
+        <div class="question">🤔 "子规啼夜月，愁空山"渲染了什么氛围？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">热闹的氛围</button>
+          <button class="opt-btn" data-correct="true">凄凉恐怖的氛围</button>
+          <button class="opt-btn" data-correct="false">宁静祥和的氛围</button>
+        </div>
+        <div class="explanation">子规（杜鹃鸟）的叫声凄惨，加上"夜月""空山"的意象，渲染出蜀道凄凉恐怖的氛围，烘托出蜀道之险。</div>
+      </div>
+    </div>
+
+    <!-- Card 5: 连峰去天 -->
+    <div class="poem-card">
+      <h3 style="color:#c0392b;margin-bottom:0.5rem;">第四部分：蜀道之险——惊心动魄</h3>
+      <div class="poem-original">
+        <span class="hl" tabindex="0" data-tip="连峰：连绵的山峰。去天：离天。不盈：不满，不足。尺：一尺。形容山峰极高，离天不到一尺">连峰去天不盈尺</span>，<span class="hl" tabindex="0" data-tip="枯松：枯死的松树。倒挂：倒着挂。倚：倚靠。绝壁：陡峭的山壁">枯松倒挂倚绝壁</span>。
+      </div>
+      <div class="poem-translation">
+        连绵的山峰离天不到一尺，枯死的松树倒挂在绝壁上。
+      </div>
+      <div class="poem-original">
+        <span class="hl" tabindex="0" data-tip="飞湍：飞奔的急流。瀑流：瀑布。喧豗：喧闹轰鸣。读音 huī。砯：水冲击岩石的声音。读音 pīng。崖：悬崖。转：转动。石：石头。壑：山谷">飞湍瀑流争喧豗，砯崖转石万壑雷</span>。
+      </div>
+      <div class="poem-translation">
+        飞奔的急流和瀑布争相喧闹轰鸣，水冲击悬崖转动石头，千万道山谷发出雷鸣般的响声。
+      </div>
+      <div class="poem-original">
+        其险也如此，嗟尔远道之人胡为乎来哉！
+      </div>
+      <div class="poem-translation">
+        它的危险就是这样，唉！你们远道而来的人为什么要来这里呢！
+      </div>
+      <div class="tip-box">这一段描写蜀道最惊险的景象："连峰去天不盈尺"——山峰离天不到一尺！"枯松倒挂倚绝壁"——枯松倒挂在绝壁上！"万壑雷"——千万山谷发出雷鸣般的轰响！视觉和听觉双管齐下，令人心惊胆战。</div>
+      <div class="mini-quiz" data-quiz="5">
+        <div class="question">🤔 "连峰去天不盈尺"是什么修辞手法？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="true">夸张</button>
+          <button class="opt-btn" data-correct="false">比喻</button>
+          <button class="opt-btn" data-correct="false">对比</button>
+        </div>
+        <div class="explanation">山峰离天"不盈尺"（不到一尺）是极度夸张，渲染山峰之高。实际上山峰不可能离天这么近，但夸张给人强烈震撼。</div>
+      </div>
+    </div>
+
+    <!-- Card 6: 剑阁峥嵘 -->
+    <div class="poem-card">
+      <h3 style="color:#c0392b;margin-bottom:0.5rem;">第五部分：剑阁之险——军事要塞</h3>
+      <div class="poem-original">
+        <span class="hl" tabindex="0" data-tip="剑阁：剑门关，在今四川剑阁县北。峥嵘：高峻的样子。而：连词。崔嵬：高大不平的样子。读音 cuī wéi">剑阁峥嵘而崔嵬</span>，一夫当关，万夫莫开。
+      </div>
+      <div class="poem-translation">
+        剑阁高峻而崎岖，一个人把守关口，一万个人也打不开。
+      </div>
+      <div class="poem-original">
+        所守或匪亲，化为狼与豺。朝避猛虎，夕避长蛇；磨牙吮血，杀人如麻。
+      </div>
+      <div class="poem-translation">
+        把守的人如果不是亲近可靠的人，就会变成狼和豺豹。早上躲避猛虎，傍晚躲避长蛇；它们磨牙吸血，杀人像麻一样多。
+      </div>
+      <div class="poem-original">
+        锦城虽云乐，不如早还家。
+      </div>
+      <div class="poem-translation">
+        成都虽然说快乐，不如早点回家。
+      </div>
+      <div class="tip-box">剑阁（剑门关）是蜀道上的军事要塞，地势险要，"一夫当关，万夫莫开"——一个人守关，万人也攻不破。但李白提醒：如果守关的人不可靠，就会变成"狼与豺"——这是政治隐喻，警告蜀地可能有叛乱危险。</div>
+      <div class="mini-quiz" data-quiz="6">
+        <div class="question">🤔 "一夫当关，万夫莫开"说明剑阁有什么特点？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">风景优美</button>
+          <button class="opt-btn" data-correct="true">地势险要，易守难攻</button>
+          <button class="opt-btn" data-correct="false">人多热闹</button>
+        </div>
+        <div class="explanation">"一夫当关，万夫莫开"说明剑阁地势险要，一个人守关就能挡住万人进攻——这是著名的军事要塞特点。</div>
+      </div>
+    </div>
+
+    <!-- Card 7: 结尾呼应 -->
+    <div class="poem-card">
+      <h3 style="color:#283593;margin-bottom:0.5rem;">结尾：再次咏叹——侧身西望</h3>
+      <div class="poem-original">
+        蜀道之难，难于上青天，侧身西望长咨嗟！
+      </div>
+      <div class="poem-translation">
+        蜀道的艰险，比登上青天还要难，侧身向西望去，发出长长的叹息！
+      </div>
+      <div class="tip-box">结尾再次咏叹"蜀道之难，难于上青天"，与开篇呼应。三次咏叹这句话，形成全诗的主旋律。最后"侧身西望长咨嗟"——望着蜀地发出长叹，给人无尽的回味。</div>
+      <div class="mini-quiz" data-quiz="7">
+        <div class="question">🤔 "蜀道之难，难于上青天"在诗中出现了几次？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">一次</button>
+          <button class="opt-btn" data-correct="false">两次</button>
+          <button class="opt-btn" data-correct="true">三次</button>
+        </div>
+        <div class="explanation">"蜀道之难，难于上青天"在开篇、中间、结尾各出现一次，共三次。这种反复咏叹形成全诗的主旋律，强调蜀道之险。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 2: 字词词典 ====== -->
+  <div class="section" id="sec-dict">
+    <h2 class="section-title">字词词典</h2>
+    <p style="color:#666;margin-bottom:1rem;">悬停或点击高亮词汇查看注释。以下是重点字词汇总：</p>
+    <div class="dict-grid">
+      <div class="dict-card">
+        <span class="word">噫吁嚱</span><span class="pinyin">yī xū xī</span>
+        <div class="meaning">惊叹词，相当于"哎呀！""啊！"</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">蚕丛鱼凫</span>
+        <div class="meaning">古代蜀国的开国君王。蚕丛、鱼凫是传说中蜀地的先祖。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">茫然</span>
+        <div class="meaning">茫然无知的样子。"开国何茫然"指开国事迹模糊不清。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">尔来</span>
+        <div class="meaning">从那以来。"尔来四万八千岁"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">秦塞</span>
+        <div class="meaning">秦地的边塞，指陕西一带。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">天梯石栈</span>
+        <div class="meaning">天梯：高峻的山路；石栈：悬崖上凿石架木的栈道。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">钩连</span>
+        <div class="meaning">勾连相连。"天梯石栈相钩连"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">六龙回日</span>
+        <div class="meaning">神话传说：太阳由六条龙拉着运行。山峰太高，龙车回转不能过。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">高标</span>
+        <div class="meaning">最高的山峰，作为标志的山峰。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">逆折</span>
+        <div class="meaning">曲折回旋。"冲波逆折之回川"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">猿猱</span><span class="pinyin">yuán náo</span>
+        <div class="meaning">猿猴。"猿猱欲度愁攀援"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">青泥</span>
+        <div class="meaning">青泥岭，蜀道上著名的险峻山岭。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">扪参历井</span><span class="pinyin">mén shēn lì jǐng</span>
+        <div class="meaning">摸着参星，经过井星。参、井是古代蜀地的星宿名。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">胁息</span>
+        <div class="meaning">屏住呼吸。"仰胁息"——仰头屏息。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">抚膺</span><span class="pinyin">fǔ yīng</span>
+        <div class="meaning">抚摸胸口。"以手抚膺坐长叹"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">巉岩</span><span class="pinyin">chán yán</span>
+        <div class="meaning">险峻的山岩。"畏途巉岩不可攀"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">子规</span>
+        <div class="meaning">杜鹃鸟。传说蜀王杜宇死后化为杜鹃，叫声凄惨。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">凋朱颜</span>
+        <div class="meaning">脸色变得惨白。"使人听此凋朱颜"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">喧豗</span><span class="pinyin">huī</span>
+        <div class="meaning">喧闹轰鸣。"飞湍瀑流争喧豗"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">砯</span><span class="pinyin">pīng</span>
+        <div class="meaning">水冲击岩石的声音。"砯崖转石万壑雷"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">剑阁</span>
+        <div class="meaning">剑门关，在今四川剑阁县北，地势险要。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">峥嵘崔嵬</span><span class="pinyin">zhēng róng cuī wéi</span>
+        <div class="meaning">高峻崎岖的样子。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">一夫当关</span>
+        <div class="meaning">一个人把守关口，形容地势险要易守难攻。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">锦城</span>
+        <div class="meaning">成都。蜀地盛产锦缎，故称锦城。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">咨嗟</span><span class="pinyin">zī jiē</span>
+        <div class="meaning">叹息。"侧身西望长咨嗟"。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 3: 文学手法 ====== -->
+  <div class="section" id="sec-devices">
+    <h2 class="section-title">文学手法探索</h2>
+
+    <div class="device-card">
+      <h3>🚀 夸张——李白最擅长的手法</h3>
+      <div class="explain">夸张是李白最典型的修辞手法。他把事物极度放大或缩小，给人强烈的震撼感。</div>
+      <div class="example">
+        "蜀道之难，难于上青天"——走路比登天还难？夸张！<br>
+        "尔来四万八千岁"——四万八千年？夸张！<br>
+        "连峰去天不盈尺"——山峰离天不到一尺？夸张！<br>
+        "黄鹤之飞尚不得过"——连黄鹤都飞不过？夸张！
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>🐉 神话传说——增添神秘色彩</h3>
+      <div class="explain">李白大量引用神话传说，把蜀道写得神秘莫测、惊心动魄。</div>
+      <div class="example">
+        "蚕丛及鱼凫"——蜀国先祖的神话<br>
+        "地崩山摧壮士死"——五丁开山的神话<br>
+        "上有六龙回日之高标"——太阳由六龙拉车的神话<br>
+        "子规啼夜月"——蜀王杜宇化为杜鹃的神话
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>🔊 感官描写——视听结合</h3>
+      <div class="explain">李白不仅描写蜀道的视觉形象，还描写各种声音，形成立体感官体验。</div>
+      <div class="example">
+        视觉："连峰去天不盈尺""枯松倒挂倚绝壁""剑阁峥嵘而崔嵬"<br>
+        听觉："飞湍瀑流争喧豗""砯崖转石万壑雷""子规啼夜月""悲鸟号古木"
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>🔄 反复咏叹——形成主旋律</h3>
+      <div class="explain">"蜀道之难，难于上青天"在诗中出现三次，形成贯穿全诗的主旋律。</div>
+      <div class="example">
+        开篇："蜀道之难，难于上青天！"<br>
+        中间："蜀道之难，难于上青天，使人听此凋朱颜！"<br>
+        结尾："蜀道之难，难于上青天，侧身西望长咨嗟！"<br>
+        ——三次咏叹，层层强化，给人深刻印象。
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>🎭 情景交融——以景衬情</h3>
+      <div class="explain">通过描写险峻的景物，烘托出恐惧、惊叹、愁叹的情感。</div>
+      <div class="example">
+        "但见悲鸟号古木""又闻子规啼夜月，愁空山"——凄凉景物烘托愁情<br>
+        "使人听此凋朱颜"——景物之险让人吓得脸色惨白<br>
+        "侧身西望长咨嗟"——望着险途发出长叹
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>🔍 找一找：以下句子主要用了什么手法？</h3>
+      <div class="find-game" id="find-game">
+        <div class="sentence" data-answer="夸张">
+          <span>"连峰去天不盈尺"</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="夸张">夸张</button>
+            <button class="device-btn" data-answer="神话">神话</button>
+            <button class="device-btn" data-answer="对比">对比</button>
+          </div>
+        </div>
+        <div class="sentence" data-answer="神话">
+          <span>"地崩山摧壮士死"</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="夸张">夸张</button>
+            <button class="device-btn" data-answer="神话">神话</button>
+            <button class="device-btn" data-answer="对比">对比</button>
+          </div>
+        </div>
+        <div class="sentence" data-answer="夸张">
+          <span>"蜀道之难，难于上青天"</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="夸张">夸张</button>
+            <button class="device-btn" data-answer="神话">神话</button>
+            <button class="device-btn" data-answer="对比">对比</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 4: 结构地图 ====== -->
+  <div class="section" id="sec-structure">
+    <h2 class="section-title">结构地图</h2>
+
+    <h3 style="margin-bottom:1rem;">🗺️ 诗歌脉络</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <h4>开篇：惊叹蜀道之难</h4>
+        <div class="desc">"噫吁嚱！""蜀道之难，难于上青天"——一声惊叹，奠定基调。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>历史：蜀道开通之难</h4>
+        <div class="desc">蚕丛鱼凫开国、四万八千年隔绝、五丁开山——历史与神话交织。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>高险：上有六龙回日</h4>
+        <div class="desc">六龙回日、黄鹤不过、猿猱愁攀、扪参历井——渲染山峰之高。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>凄险：悲鸟子规啼鸣</h4>
+        <div class="desc">悲鸟号古木、子规啼夜月、愁空山——听觉渲染凄凉恐怖。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>惊险：连峰枯松飞瀑</h4>
+        <div class="desc">连峰去天、枯松倒挂、飞湍瀑流、万壑雷——惊心动魄的景象。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>剑阁：一夫当关万夫莫开</h4>
+        <div class="desc">剑阁峥嵘、一夫当关、狼豺猛虎——军事险要和政治隐喻。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>结尾：再次咏叹长咨嗟</h4>
+        <div class="desc">"蜀道之难，难于上青天"第三次出现，侧身西望长叹。</div>
+      </div>
+    </div>
+
+    <h3 style="margin:2rem 0 1rem;">📊 蜀道之险：多层次描写</h3>
+    <p style="color:#666;margin-bottom:1rem;font-size:0.95rem;">
+      李白从多个角度描写蜀道之险——
+    </p>
+    <div class="chart-bar-container">
+      <div class="chart-row">
+        <div class="label">时间之险</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:30%;background:#9b59b6"></div></div>
+        <div class="count">四万八千年隔绝</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">高度之险</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:50%;background:#283593"></div></div>
+        <div class="count">六龙回日、黄鹤不过</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">路程之险</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:40%;background:#5c6bc0"></div></div>
+        <div class="count">百步九折、巉岩难攀</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">氛围之险</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:35%;background:#7986cb"></div></div>
+        <div class="count">悲鸟子规、愁空山</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">景象之险</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:45%;background:#3f51b5"></div></div>
+        <div class="count">连峰枯松、万壑雷</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">军事之险</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:60%;background:#c0392b"></div></div>
+        <div class="count">剑阁峥嵘、一夫当关</div>
+      </div>
+    </div>
+    <div class="tip-box" style="margin-top:1rem;">
+      李白从六个层面描写蜀道之险：时间（历史）、高度、路程、氛围、景象、军事。每一层都用夸张和神话渲染，形成立体、震撼的艺术效果。
+    </div>
+  </div>
+
+  <!-- ====== Section 5: 主题讨论 ====== -->
+  <div class="section" id="sec-themes">
+    <h2 class="section-title">主题讨论</h2>
+
+    <div class="theme-card xian">
+      <h3>🏔️ 蜀道之险：夸张的艺术真实</h3>
+      <div class="evidence">"蜀道之难，难于上青天"</div>
+      <p class="prompt-q">思考：李白笔下的蜀道比真实的蜀道更险峻。这种"夸张"是虚假吗？还是另一种"艺术的真实"？文学作品为什么要夸张？</p>
+      <div class="notes-area" data-key="xian">
+        <textarea placeholder="写下你的想法……"></textarea>
+        <button class="save-btn">保存笔记</button>
+        <span class="saved-msg">已保存 ✓</span>
+      </div>
+    </div>
+
+    <div class="theme-card zhuang">
+      <h3>🧗 壮士之死：牺牲与开拓</h3>
+      <div class="evidence">"地崩山摧壮士死，然后天梯石栈相钩连"</div>
+      <p class="prompt-q">思考：五丁开山的传说，五位壮士为开通蜀道而牺牲。在人类历史上，有多少重大的开拓都伴随着牺牲？这种牺牲值得吗？</p>
+      <div class="notes-area" data-key="zhuang">
+        <textarea placeholder="写下你的想法……"></textarea>
+        <button class="save-btn">保存笔记</button>
+        <span class="saved-msg">已保存 ✓</span>
+      </div>
+    </div>
+
+    <div class="theme-card you">
+      <h3>⚠️ 剑阁之险：政治隐喻</h3>
+      <div class="evidence">"所守或匪亲，化为狼与豺"</div>
+      <p class="prompt-q">思考：李白写剑阁时，提到守关的人如果不可靠，就会变成"狼与豺"。这是单纯写险要地势，还是在暗示蜀地可能有叛乱危险？文学作品如何表达政治隐喻？</p>
+      <div class="notes-area" data-key="you">
+        <textarea placeholder="写下你的想法……"></textarea>
+        <button class="save-btn">保存笔记</button>
+        <span class="saved-msg">已保存 ✓</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 6: 小测验 ====== -->
+  <div class="section" id="sec-quiz">
+    <h2 class="section-title">综合小测验</h2>
+    <p style="color:#666;margin-bottom:1.5rem;">检验一下你的学习成果吧！</p>
+
+    <div id="quiz-container">
+      <div class="quiz-item" data-quiz-q="1">
+        <span class="q-num">Q1.</span>
+        <div class="q-text">《蜀道难》的作者是谁？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false杜甫">杜甫</div>
+          <div class="q-opt" data-correct="true">李白</div>
+          <div class="q-opt" data-correct="false">白居易</div>
+          <div class="q-opt" data-correct="false">王维</div>
+        </div>
+        <div class="q-explain">李白（701-762），字太白，唐代伟大的浪漫主义诗人，被誉为"诗仙"。《蜀道难》是他的代表作之一。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="2">
+        <span class="q-num">Q2.</span>
+        <div class="q-text">"蜀道之难，难于上青天"在诗中出现了几次？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">一次</div>
+          <div class="q-opt" data-correct="false">两次</div>
+          <div class="q-opt" data-correct="true">三次</div>
+          <div class="q-opt" data-correct="false">四次</div>
+        </div>
+        <div class="q-explain">"蜀道之难，难于上青天"在开篇、中间、结尾各出现一次，共三次。这种反复咏叹形成全诗的主旋律。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="3">
+        <span class="q-num">Q3.</span>
+        <div class="q-text">"地崩山摧壮士死"引用的是什么？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">真实历史事件</div>
+          <div class="q-opt" data-correct="true">五丁开山的神话传说</div>
+          <div class="q-opt" data-correct="false">李白自己的经历</div>
+          <div class="q-opt" data-correct="false">杜甫的诗句</div>
+        </div>
+        <div class="q-explain">这句引用了古代蜀地的神话"五丁开山"——五个壮士为了开通蜀道而牺牲，增添了神秘色彩。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="4">
+        <span class="q-num">Q4.</span>
+        <div class="q-text">"一夫当关，万夫莫开"描写的是什么？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">蜀道的风景</div>
+          <div class="q-opt" data-correct="true">剑阁地势险要，易守难攻</div>
+          <div class="q-opt" data-correct="false">蜀道人多</div>
+          <div class="q-opt" data-correct="false">蜀道很短</div>
+        </div>
+        <div class="q-explain">"一夫当关，万夫莫开"描写剑阁（剑门关）地势险要，一个人守关就能挡住万人进攻。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="5">
+        <span class="q-num">Q5.</span>
+        <div class="q-text">"子规"是什么鸟？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">黄鹤</div>
+          <div class="q-opt" data-correct="true">杜鹃鸟</div>
+          <div class="q-opt" data-correct="false">燕子</div>
+          <div class="q-opt" data-correct="false">喜鹊</div>
+        </div>
+        <div class="q-explain">"子规"是杜鹃鸟。传说蜀王杜宇死后化为杜鹃，叫声凄惨，渲染蜀道凄凉恐怖的氛围。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="6">
+        <span class="q-num">Q6.</span>
+        <div class="q-text">李白最擅长的修辞手法是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">对比</div>
+          <div class="q-opt" data-correct="false">对偶</div>
+          <div class="q-opt" data-correct="true">夸张</div>
+          <div class="q-opt" data-correct="false">拟人</div>
+        </div>
+        <div class="q-explain">夸张是李白最典型的修辞手法。"连峰去天不盈尺""尔来四万八千岁"等都是极度的夸张。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="7">
+        <span class="q-num">Q7.</span>
+        <div class="q-text">贺知章读完《蜀道难》后，称李白为？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">诗圣</div>
+          <div class="q-opt" data-correct="true">谪仙人</div>
+          <div class="q-opt" data-correct="false">诗豪</div>
+          <div class="q-opt" data-correct="false">诗鬼</div>
+        </div>
+        <div class="q-explain">贺知章读完《蜀道难》后惊叹"公非人世之人"，称李白为"谪仙人"——从天上被贬谪到人间的仙人。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="8">
+        <span class="q-num">Q8.</span>
+        <div class="q-text">"扪参历井"的意思是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">参加考试</div>
+          <div class="q-opt" data-correct="true">摸着天上的星星</div>
+          <div class="q-opt" data-correct="false">经过井边</div>
+          <div class="q-opt" data-correct="false">参拜神庙</div>
+        </div>
+        <div class="q-explain">"扪参历井"指摸着参星、经过井星——夸张地说山峰极高，行人仿佛能摸到天上的星星。</div>
+      </div>
+    </div>
+
+    <div id="quiz-result">
+      <div class="score" id="quiz-score"></div>
+      <div class="msg" id="quiz-msg"></div>
+      <button class="btn-start" id="btn-reset-quiz" style="margin-top:1.5rem;font-size:1rem;padding:10px 32px;">重新测验</button>
+    </div>
+  </div>
+
+  <!-- ====== Section: 延伸阅读 ====== -->
+  <div class="section extend-section" id="sec-extend">
+    <h2 class="section-title">延伸阅读</h2>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">📖</span>
+        <h3>李白与杜甫——唐诗的双子星</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>李白和杜甫是唐代最伟大的两位诗人，后人并称"李杜"：</p>
+          <ul style="list-style:none;padding:0;">
+            <li>· <b>李白</b>（701-762）：浪漫主义诗人，"诗仙"，诗风豪放飘逸，善用夸张和想象</li>
+            <li>· <b>杜甫</b>（712-770）：现实主义诗人，"诗圣"，诗风沉郁顿挫，关注社会现实</li>
+          </ul>
+          <p>两人曾在洛阳相遇，同游梁宋，结下友谊。杜甫有多首诗怀念李白：</p>
+          <blockquote>"李白一斗诗百篇……天子呼来不上船，自称臣是酒中仙。"——杜甫《饮中八仙歌》</blockquote>
+        </div>
+      </div>
+    </div>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">⚔️</span>
+        <h3>蜀道与剑阁——真实的险要</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>"蜀道"和"剑阁"在历史上确实险要：</p>
+          <ul style="list-style:none;padding:0;">
+            <li>· <b>蜀道</b>：穿越秦岭、大巴山的道路，悬崖峭壁，栈道凌空</li>
+            <li>· <b>剑阁（剑门关）</b>：因山峰如剑、峭壁中断如门而得名，是蜀道咽喉</li>
+          </ul>
+          <p>历史上，剑阁多次成为军事要塞。三国时期，姜维曾在此据守；抗战时期，川军也曾凭险据守。李白"一夫当关，万夫莫开"的描写，是真实的军事地理。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">🎭</span>
+        <h3>李白的蜀地情结——家乡的险途</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>李白五岁迁居四川，在蜀地成长二十余年，对蜀道有切身体会：</p>
+          <ul style="list-style:none;padding:0;">
+            <li>· 他熟悉蜀地的山川地理、神话传说</li>
+            <li>· 他了解蜀道的险峻——那是他家乡的路</li>
+            <li>· 他对蜀地有深厚感情——离开多年后仍念念不忘</li>
+          </ul>
+          <p>《蜀道难》既是写蜀道之险，也是李白对家乡的深情回望——那条险途，是他成长的路，是他离开的路，也是他心中永远的路。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">📜</span>
+        <h3>李白的乐府诗——继承与创新</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>《蜀道难》是李白创作的乐府诗：</p>
+          <ul style="list-style:none;padding:0;">
+            <li>· "乐府"原是汉代音乐机构，乐府诗是配乐歌唱的诗歌</li>
+            <li>· 李白借用古乐府题目，但内容完全创新</li>
+            <li>· 他用古题写新意，开创了"新乐府"的传统</li>
+          </ul>
+          <p>李白其他乐府诗代表作：《将进酒》《行路难》《关山月》等，都是借用古题抒发情怀的创新之作。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-nav">
+    <a href="index.html">← 返回篇目目录</a>
+    <a href="chushibiao.html">上一篇：出师表 →</a>
+    <a href="zuwengtingji.html">下一篇：醉翁亭记 →</a>
+  </div>
+  <p>蜀道难互动学习 · 适合中学生使用</p>
+  <p style="margin-top:0.3rem;">基于盛唐李白《蜀道难》制作</p>
+</footer>
+
+<script>
+window.PAGE_CONFIG = {
+  accent: '#283593',
+  storagePrefix: 'shudao_note_',
+  quizName: '蜀道难'
+};
+</script>
+<script src="common.js" defer></script>
+</body>
+</html>

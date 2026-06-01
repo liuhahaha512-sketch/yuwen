@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>出师表 — 互动学习</title>
+<link rel="stylesheet" href="common.css">
+<style>
+/* ===== Page-specific ===== */
+:root { --accent: #8e44ad; --progress-gradient: linear-gradient(90deg, #8e44ad, #3498db); --timeline-gradient: linear-gradient(180deg, #8e44ad, #3498db, #c0392b); }
+
+#hero {
+  min-height: 100vh; min-height: -webkit-fill-available; min-height: 100dvh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; background: linear-gradient(180deg, #f5f0e8 0%, #e8e0d0 100%);
+}
+.ink-mountain {
+  position: absolute; bottom: 0; width: 100%; height: 200px;
+  background: linear-gradient(135deg, transparent 40%, rgba(0,0,0,0.04) 40.5%, rgba(0,0,0,0.08) 50%, transparent 50.5%),
+              linear-gradient(200deg, transparent 30%, rgba(0,0,0,0.03) 30.5%, rgba(0,0,0,0.06) 45%, transparent 45.5%);
+}
+.hero-content { text-align: center; z-index: 1; padding: 2rem; }
+.hero-content h1 {
+  font-family: "STKaiti", "KaiTi", "Kaiti SC", "Noto Serif SC", serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  color: #2d2d2d;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+.hero-content .subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: #666;
+  margin-bottom: 1rem;
+}
+.hero-content .hook {
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  color: #8e44ad;
+  font-style: italic;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+.btn-start {
+  display: inline-block; padding: 14px 48px; font-size: 1.2rem;
+  background: #8e44ad; color: #f5f0e8; border: none; border-radius: 8px;
+  cursor: pointer; text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(142,68,173,0.3);
+}
+@media (hover: hover) {
+  .btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(142,68,173,0.4); }
+}
+.back-link {
+  display: inline-block; color: #999; text-decoration: none; font-size: 0.95rem;
+  transition: color 0.2s; margin-bottom: 0.8rem;
+}
+@media (hover: hover) {
+  .back-link:hover { color: #8e44ad; }
+}
+
+.theme-card.zhongcheng { border-left-color: #c0392b; }
+.theme-card.renxian { border-left-color: #8e44ad; }
+.theme-card.yimin { border-left-color: #3498db; }
+
+@media (max-width: 768px) {
+  .hero-content h1 { font-size: 3rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar" style="width:0%"></div>
+
+<button id="nav-toggle" aria-label="打开导航">☰</button>
+
+<nav id="sidebar" aria-label="文章导航">
+  <h3>📖 导航</h3>
+  <a href="#hero">首页</a>
+  <a href="#sec-background">知人论世</a>
+  <a href="#sec-reading">逐段精读</a>
+  <a href="#sec-dict">字词词典</a>
+  <a href="#sec-devices">文学手法</a>
+  <a href="#sec-structure">结构地图</a>
+  <a href="#sec-themes">主题讨论</a>
+  <a href="#sec-quiz">小测验</a>
+  <a href="#sec-extend">延伸阅读</a>
+</nav>
+
+<div class="tooltip-popup" id="tooltip"></div>
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+  <div class="ink-cloud"></div>
+  <div class="ink-cloud"></div>
+  <div class="ink-cloud"></div>
+  <div class="ink-mountain"></div>
+  <div class="hero-content">
+    <h1>出师表</h1>
+    <p class="subtitle">三国 · 诸葛亮</p>
+    <p class="hook">"鞠躬尽瘁，死而后已"——一位老臣对年轻皇帝的最后嘱托。</p>
+    <a href="index.html" class="back-link">← 返回篇目目录</a>
+    <br>
+    <a href="#sec-reading" class="btn-start">开始探索 ↓</a>
+  </div>
+</section>
+
+<!-- ===== MAIN ===== -->
+<div id="main">
+
+  <!-- ====== Section: 知人论世 ====== -->
+  <div class="section" id="sec-background">
+    <h2 class="section-title">知人论世</h2>
+
+    <div class="info-card">
+      <div class="info-card-header">
+        <div class="author-seal">诸葛</div>
+        <div>
+          <h3>诸葛亮（181—234）</h3>
+          <div class="subtitle-tag">字孔明 · 号卧龙 · 琅琊阳都人</div>
+        </div>
+      </div>
+      <div class="info-card-body">
+        <ul>
+          <li>三国时期蜀汉丞相，杰出的<span class="highlight-text">政治家、军事家、散文家</span></li>
+          <li>刘备"三顾茅庐"请出诸葛亮，自此"鞠躬尽瘁"，辅佐蜀汉政权二十余年</li>
+          <li>刘备临终托孤："<span class="highlight-text">若嗣子可辅，辅之；如其不才，君可自取</span>"——诸葛亮却始终忠诚辅佐刘禅</li>
+          <li>本文写于建兴五年（227），诸葛亮即将北伐曹魏，临行前上表给后主刘禅</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-header">
+        <div class="author-seal">北伐</div>
+        <div>
+          <h3>写作背景：临行前的殷殷嘱托</h3>
+          <div class="subtitle-tag">这篇文章是怎么来的？</div>
+        </div>
+      </div>
+      <div class="info-card-body">
+        <p>建兴五年（227），诸葛亮准备北伐曹魏。此时的蜀汉，刘备已去世四年，后主刘禅年仅二十岁，政务懈怠，朝廷内部问题重重。</p>
+        <p>诸葛亮在出征前写下这篇《出师表》，不是战前动员令，而是一封<span class="highlight-text">情真意切的"家书"</span>——他像一位长辈，絮絮叨叨地叮嘱年轻的皇帝：要听贤臣的话、要公正赏罚、不要亲小人远贤臣……</p>
+        <p>全文没有华丽的辞藻，没有高深的理论，却用最朴实的语言表达了最深沉的情感。读此文，犹如听见一位老臣的声声叮咛。</p>
+        <div class="fun-fact">"出师表"的"表"是古代臣子向皇帝陈述意见的一种文体。诸葛亮共写了两篇出师表，本文为《前出师表》，另有《后出师表》（写于建兴六年）。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 1: 逐段精读 ====== -->
+  <div class="section" id="sec-reading">
+    <h2 class="section-title">逐段精读</h2>
+
+    <!-- Card 1: 开篇危急 -->
+    <div class="poem-card">
+      <h3 style="color:#8e44ad;margin-bottom:0.5rem;">第一段：分析形势——危急存亡</h3>
+      <div class="poem-original">
+        先帝创业未半而<span class="hl" tabindex="0" data-tip="中道：中途。崩殂：死亡。崩：古代称帝王之死；殂：读音 cú，死亡">中道崩殂</span>，今天下三分，<span class="hl" tabindex="0" data-tip="益州：蜀汉所在地，今四川一带。疲弊：困苦疲惫">益州疲弊</span>，此诚<span class="hl" tabindex="0" data-tip="诚：确实。危急：危急。存亡：生存或灭亡">危急存亡之秋</span>也。
+      </div>
+      <div class="poem-translation">
+        先帝开创大业未完成一半，就中途去世了。现在天下分裂为三国，我们益州人力疲惫、民生困苦，这真是国家危急存亡的关键时刻啊。
+      </div>
+      <div class="tip-box">开篇就是"危机预警"！诸葛亮首先指出形势严峻——先帝去世、天下三分、益州疲弊。这种开篇方式叫"以危言起笔"，目的是唤醒皇帝的忧患意识。</div>
+      <div class="mini-quiz" data-quiz="1">
+        <div class="question">🤔 "此诚危急存亡之秋也"中的"秋"是什么意思？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">秋天</button>
+          <button class="opt-btn" data-correct="true">时刻、时候</button>
+          <button class="opt-btn" data-correct="false">时期</button>
+        </div>
+        <div class="explanation">古汉语中"秋"常指"时刻、时候"，如"多事之秋"。这里"存亡之秋"即生死存亡的关键时刻。</div>
+      </div>
+    </div>
+
+    <!-- Card 2: 内外优势 -->
+    <div class="poem-card">
+      <h3 style="color:#8e44ad;margin-bottom:0.5rem;">第二段：指出优势——仍有希望</h3>
+      <div class="poem-original">
+        然<span class="hl" tabindex="0" data-tip="侍卫：保卫。之：的。臣：臣子。不懈：不松懈。于：在。内：朝廷内部">侍卫之臣不懈于内</span>，<span class="hl" tabindex="0" data-tip="忠志：忠诚有志向。之士：将士。忘：忘记。身：自身生命。于：在。外：战场前线">忠志之士忘身于外</span>者，盖<span class="hl" tabindex="0" data-tip="盖：原因是。追：追念。先帝：刘备。殊遇：特殊的待遇，厚遇">追先帝之殊遇</span>，欲报之于陛下也。
+      </div>
+      <div class="poem-translation">
+        然而，侍卫大臣在宫廷内毫不懈怠，忠诚将士在战场上忘身作战，这都是因为追念先帝对他们的特殊待遇，想要报答给陛下您啊。
+      </div>
+      <div class="tip-box">话锋一转——虽然形势危急，但"侍卫之臣不懈于内，忠志之士忘身于外"。将士们为什么这么拼命？因为先帝的恩德！诸葛亮巧妙地用先帝的威望来激励刘禅。</div>
+      <div class="mini-quiz" data-quiz="2">
+        <div class="question">🤔 为什么将士们"不懈于内""忘身于外"？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">因为待遇丰厚</button>
+          <button class="opt-btn" data-correct="true">因为追念先帝的特殊恩遇</button>
+          <button class="opt-btn" data-correct="false">因为惧怕诸葛亮</button>
+        </div>
+        <div class="explanation">将士们效忠的原因是"追先帝之殊遇"——感念先帝刘备的特殊恩德，想要报答给刘禅。这里隐含着对刘禅的期望：要继承父亲的遗志。</div>
+      </div>
+    </div>
+
+    <!-- Card 3: 开张圣听 -->
+    <div class="poem-card">
+      <h3 style="color:#8e44ad;margin-bottom:0.5rem;">第三段：提出建议——开张圣听</h3>
+      <div class="poem-original">
+        陛下诚宜<span class="hl" tabindex="0" data-tip="诚：确实。宜：应该。开张：开扩。圣听：圣明的听闻，听取意见">开张圣听</span>，以光先帝遗德，恢弘志士之气，不宜妄自菲薄，引喻失义，以塞忠谏之路也。
+      </div>
+      <div class="poem-translation">
+        陛下确实应该广泛听取臣下的意见，来发扬先帝遗留下的美德，振奋志士们的士气，不应该随便看轻自己，说话不合道理，从而堵塞忠诚进谏的道路。
+      </div>
+      <div class="tip-box">第一条建议："开张圣听"——多听取意见。诸葛亮委婉地批评刘禅"妄自菲薄""引喻失义"，说他自卑、说话没道理。这是怎样的胆量！臣子批评皇帝，全凭一片忠心。</div>
+      <div class="mini-quiz" data-quiz="3">
+        <div class="question">🤔 "妄自菲薄"的意思是？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">谦虚谨慎</button>
+          <button class="opt-btn" data-correct="true">过分看轻自己</button>
+          <button class="opt-btn" data-correct="false">节俭朴素</button>
+        </div>
+        <div class="explanation">"妄"是胡乱，"菲薄"是瞧不起。"妄自菲薄"即过分看轻自己，没有自信心。诸葛亮批评刘禅不要自卑。</div>
+      </div>
+    </div>
+
+    <!-- Card 4: 公平赏罚 -->
+    <div class="poem-card">
+      <h3 style="color:#8e44ad;margin-bottom:0.5rem;">第四段：提出建议——公平赏罚</h3>
+      <div class="poem-original">
+        <span class="hl" tabindex="0" data-tip="宫中：皇宫中。府中：丞相府中。府：指丞相府">宫中府中</span>，俱为一体，<span class="hl" tabindex="0" data-tip="陟：提拔。读音 zhì。罚：惩罚。臧：善，表扬。否：恶，批评。读音 pǐ。异：不同">陟罚臧否</span>，不宜异同。
+      </div>
+      <div class="poem-translation">
+        皇宫中和丞相府中，都是一个整体，提拔惩罚、表扬批评，不应该有什么不同。
+      </div>
+      <div class="poem-original">
+        若有作奸犯科及为忠善者，宜付有司论其刑赏，以昭陛下平明之理，不宜偏私，使内外异法也。
+      </div>
+      <div class="poem-translation">
+        如果有人做坏事触犯法律，或者有人忠心做善事，都应该交给主管官员判定他们的惩罚或奖赏，来显示陛下公正严明的治理，不应该有偏私，使内外的法律不同。
+      </div>
+      <div class="tip-box">第二条建议："陟罚臧否，不宜异同"——赏罚要公平。诸葛亮特别强调"宫中府中，俱为一体"，意思是皇宫和丞相府标准要一致。这暗示刘禅可能对身边人有所偏私。</div>
+      <div class="mini-quiz" data-quiz="4">
+        <div class="question">🤔 "陟罚臧否"中"臧"和"否"分别是什么意思？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">好和坏</button>
+          <button class="opt-btn" data-correct="true">表扬善和批评恶</button>
+          <button class="opt-btn" data-correct="false">奖励和惩罚</button>
+        </div>
+        <div class="explanation">"臧"是善，"否"是恶（读音 pǐ）。这里"陟罚臧否"指提拔好人、惩罚坏人，即奖善惩恶。</div>
+      </div>
+    </div>
+
+    <!-- Card 5: 推荐贤臣 -->
+    <div class="poem-card">
+      <h3 style="color:#8e44ad;margin-bottom:0.5rem;">第五段：推荐贤臣——文臣</h3>
+      <div class="poem-original">
+        侍中、侍郎郭攸之、费祎、董允等，此皆良实，志虑忠纯，是以先帝简拔以遗陛下。愚以为宫中之事，事无大小，悉以咨之，然后施行，必能<span class="hl" tabindex="0" data-tip="裨：弥补，补助。读音 bì。阙：缺点，疏漏。读音 quē。补裨阙漏：弥补缺点和疏漏">裨补阙漏</span>，有所广益。
+      </div>
+      <div class="poem-translation">
+        侍中、侍郎郭攸之、费祎、董允等人，都是善良诚实的人，志向思虑忠诚纯正，所以先帝选拔他们留给陛下。我认为宫中的事情，无论大小，都要征求他们的意见，然后实行，一定能够弥补缺点和疏漏，获得更多的益处。
+      </div>
+      <div class="tip-box">诸葛亮推荐了郭攸之、费祎、董允三位文臣。特别强调"先帝简拔以遗陛下"——这些人都是你父亲选的！用先帝的名义推荐，分量更重。</div>
+    </div>
+
+    <!-- Card 6: 推荐武将 -->
+    <div class="poem-card">
+      <h3 style="color:#8e44ad;margin-bottom:0.5rem;">第六段：推荐贤臣——武将</h3>
+      <div class="poem-original">
+        将军向宠，性行淑均，晓畅军事，试用于昔日，先帝称之曰能，是以众议举宠为督。愚以为营中之事，悉以咨之，必能使行阵和睦，优劣得所。
+      </div>
+      <div class="poem-translation">
+        将军向宠，性格品行善良公正，精通军事，在过去经过试用，先帝称赞他有才能，所以众人商议推举他做中部督。我认为军营中的事情，都征求他的意见，一定能使军队团结和睦，优劣各得其所。
+      </div>
+      <div class="tip-box">推荐武将向宠，同样强调"先帝称之曰能"。诸葛亮反复引用先帝，是因为刘禅年轻，对自己父亲的信任远超过对臣子的信任。</div>
+      <div class="mini-quiz" data-quiz="5">
+        <div class="question">🤔 诸葛亮推荐贤臣时，为什么反复强调"先帝简拔""先帝称之"？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">炫耀自己的功劳</button>
+          <button class="opt-btn" data-correct="true">借先帝威望增强说服力</button>
+          <button class="opt-btn" data-correct="false">说明这些人是刘备亲信</button>
+        </div>
+        <div class="explanation">刘禅年轻，对父亲刘备有天然的敬仰和信任。诸葛亮借先帝的名义推荐贤臣，比自己直接推荐更有说服力——这是高超的政治智慧。</div>
+      </div>
+    </div>
+
+    <!-- Card 7: 亲贤远小 -->
+    <div class="poem-card">
+      <h3 style="color:#c0392b;margin-bottom:0.5rem;">第七段：核心建议——亲贤远小</h3>
+      <div class="poem-original">
+        亲贤臣，远小人，此汉室所以兴隆也；亲小人，远贤臣，此后汉所以倾颓也。
+      </div>
+      <div class="poem-translation">
+        亲近贤臣，疏远小人，这是汉朝之所以兴隆的原因；亲近小人，疏远贤臣，这是后汉之所以衰败的原因。
+      </div>
+      <div class="poem-original">
+        先帝在时，每与臣论此事，未尝不叹息痛恨于桓、灵也。
+      </div>
+      <div class="poem-translation">
+        先帝活着的时候，每次跟我谈论这件事，没有不对桓帝、灵帝叹息痛恨的。
+      </div>
+      <div class="poem-original">
+        侍中、尚书、长史、参军，此悉贞良死节之臣，愿陛下亲之信之，则汉室之隆，可计日而待也。
+      </div>
+      <div class="poem-translation">
+        侍中、尚书、长史、参军，这些都是忠贞善良、以死守节的臣子，希望陛下亲近他们、信任他们，那么汉室的兴隆，就可以计算着日子来等待了。
+      </div>
+      <div class="tip-box">这是全文最核心的建议！"亲贤臣，远小人"八个字，总结了汉朝兴衰的历史教训。诸葛亮提到桓帝、灵帝——正是这两个昏君亲近宦官小人，导致东汉灭亡。</div>
+      <div class="mini-quiz" data-quiz="6">
+        <div class="question">🤔 "亲贤臣，远小人"是全文的核心建议，它总结了什么历史教训？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">曹操成功的经验</button>
+          <button class="opt-btn" data-correct="true">汉朝兴衰的规律</button>
+          <button class="opt-btn" data-correct="false">刘备失败的教训</button>
+        </div>
+        <div class="explanation">诸葛亮以汉朝历史为鉴——兴盛时期（前汉）亲贤远小，衰败时期（后汉）亲小远贤。他特别痛恨桓帝、灵帝亲近宦官导致东汉灭亡。</div>
+      </div>
+    </div>
+
+    <!-- Card 8: 追述往事 -->
+    <div class="poem-card">
+      <h3 style="color:#8e44ad;margin-bottom:0.5rem;">第八段：追述往事——感念先帝</h3>
+      <div class="poem-original">
+        臣本布衣，躬耕于南阳，苟全性命于乱世，不求闻达于诸侯。
+      </div>
+      <div class="poem-translation">
+        我本来是个平民百姓，在南阳亲自耕种，只求在乱世中保全性命，不希求在诸侯中扬名显达。
+      </div>
+      <div class="poem-original">
+        先帝不以臣卑鄙，<span class="hl" tabindex="0" data-tip="猥：辱，降低身份。自：亲自。枉：弯曲。屈：屈尊。读音 wěi wǎng qū">猥自枉屈</span>，三顾臣于草庐之中，咨臣以当世之事，由是感激，遂许先帝以驱驰。
+      </div>
+      <div class="poem-translation">
+        先帝不嫌我地位低下、见识浅陋，降低身份，委屈自己，三次到草庐中拜访我，向我询问当代的大事，我因此十分感激，于是答应先帝为他奔走效劳。
+      </div>
+      <div class="poem-original">
+        后值倾覆，受任于败军之际，奉命于危难之间，尔来二十有一年矣。
+      </div>
+      <div class="poem-translation">
+        后来遭遇失败，在战败的时候接受任务，在危难的时刻奉命出使，从那时到现在已经二十一年了。
+      </div>
+      <div class="tip-box">这一段诸葛亮追述自己的人生经历——本是布衣，躬耕南阳，不求闻达。"三顾茅庐"是人生转折点。这段叙述充满感恩之情，也解释了为什么自己如此忠诚。</div>
+      <div class="mini-quiz" data-quiz="7">
+        <div class="question">🤔 "三顾臣于草庐之中"指的是什么历史事件？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="true">刘备三次拜访诸葛亮请他出山</button>
+          <button class="opt-btn" data-correct="false">诸葛亮三次拜访刘备</button>
+          <button class="opt-btn" data-correct="false">刘备三次战败</button>
+        </div>
+        <div class="explanation">"三顾茅庐"是著名的历史典故——刘备三次到诸葛亮隐居的草庐拜访，诚心请他出山辅佐。这体现了刘备的诚意和识人之明。</div>
+      </div>
+    </div>
+
+    <!-- Card 9: 陈述职责 -->
+    <div class="poem-card">
+      <h3 style="color:#8e44ad;margin-bottom:0.5rem;">第九段：陈述职责——必当尽责</h3>
+      <div class="poem-original">
+        先帝知臣谨慎，故临崩寄臣以大事也。
+      </div>
+      <div class="poem-translation">
+        先帝知道我做事谨慎，所以在临终时把国家大事托付给我。
+      </div>
+      <div class="poem-original">
+        <span class="hl" tabindex="0" data-tip="受命：接受命令。以来：以来。夙：早晨。夜：夜晚。忧：忧虑。叹：叹息。夙夜忧叹：早晚忧虑叹息">受命以来，夙夜忧叹</span>，恐托付不效，以伤先帝之明。
+      </div>
+      <div class="poem-translation">
+        自接受使命以来，我早晚忧虑叹息，担心托付给我的大事不能完成，从而损害先帝的英明。
+      </div>
+      <div class="poem-original">
+        故五月渡泸，深入不毛。今南方已定，兵甲已足，当奖率三军，北定中原，庶竭驽钝，攘除奸凶，兴复汉室，还于旧都。
+      </div>
+      <div class="poem-translation">
+        所以五月渡过泸水，深入到荒凉之地。现在南方已经平定，兵器军备已经充足，应当鼓励率领三军，北上平定中原，希望能竭尽我平庸的能力，铲除奸凶敌人，复兴汉室，回到旧都洛阳。
+      </div>
+      <div class="tip-box">诸葛亮提到"临崩寄臣以大事"——白帝城托孤。刘备临终时将儿子刘禅和国家大事都托付给诸葛亮。这份重托，是诸葛亮二十年"夙夜忧叹"的根本原因。</div>
+    </div>
+
+    <!-- Card 10: 临别叮嘱 -->
+    <div class="poem-card">
+      <h3 style="color:#c0392b;margin-bottom:0.5rem;">第十段：临别叮嘱——责任分工</h3>
+      <div class="poem-original">
+        此臣所以报先帝而忠陛下之职分也。
+      </div>
+      <div class="poem-translation">
+        这就是我报答先帝、效忠陛下的职责本分。
+      </div>
+      <div class="poem-original">
+        至于斟酌损益，进尽忠言，则攸之、祎、允之任也。
+      </div>
+      <div class="poem-translation">
+        至于斟酌利弊得失、进献忠诚之言，那是郭攸之、费祎、董允的责任。
+      </div>
+      <div class="poem-original">
+        愿陛下托臣以讨贼兴复之效，不效则治臣之罪，以告先帝之灵。
+      </div>
+      <div class="poem-translation">
+        希望陛下把讨伐奸贼、复兴汉室的任务托付给我，如果没有成效就治我的罪，来告慰先帝在天之灵。
+      </div>
+      <div class="poem-original">
+        若无兴德之言，则责攸之、祎、允等之慢，以彰其咎。
+      </div>
+      <div class="poem-translation">
+        如果没有发扬圣德的言论，就责罚郭攸之、费祎、董允等人的怠慢，来揭示他们的过失。
+      </div>
+      <div class="poem-original">
+        陛下亦宜自谋，以咨诹善道，察纳雅言，深追先帝遗诏。臣不胜受恩感激。
+      </div>
+      <div class="poem-translation">
+        陛下也应该自己谋划，征求治国良策，采纳正确意见，深切追念先帝的遗诏。我受恩感激不尽。
+      </div>
+      <div class="tip-box">诸葛亮明确分工：自己负责北伐，郭攸之等负责进谏，刘禅也要"自谋"。甚至说"不效则治臣之罪"——如果北伐失败，请治我的罪！这是何等的担当和决心。</div>
+    </div>
+
+    <!-- Card 11: 临表涕零 -->
+    <div class="poem-card">
+      <h3 style="color:#c0392b;margin-bottom:0.5rem;">结尾：临表涕零——情真意切</h3>
+      <div class="poem-original">
+        今当远离，临表<span class="hl" tabindex="0" data-tip="涕：眼泪。零：落下。涕零：流泪">涕零</span>，不知所云。
+      </div>
+      <div class="poem-translation">
+        如今就要远离，面对这篇表文，我眼泪流下，不知道说了些什么。
+      </div>
+      <div class="tip-box">结尾"临表涕零，不知所云"——写表文时流泪，不知说了什么。这不是客套话，而是真情流露。一位老臣即将远征，面对年轻的皇帝，满腔担忧、满心牵挂，写下此文时泪如雨下。</div>
+      <div class="mini-quiz" data-quiz="8">
+        <div class="question">🤔 "临表涕零，不知所云"表达了诸葛亮怎样的情感？</div>
+        <div class="options">
+          <button class="opt-btn" data-correct="false">对战争的恐惧</button>
+          <button class="opt-btn" data-correct="true">对先帝的感念和对刘禅的担忧</button>
+          <button class="opt-btn" data-correct="false">对自己前途的不确定</button>
+        </div>
+        <div class="explanation">诸葛亮流泪的原因是复杂的：感念先帝的三顾之恩和托孤之重，担忧刘禅能否亲贤远小，牵挂北伐能否成功。这是忠诚老臣的真情流露。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 2: 字词词典 ====== -->
+  <div class="section" id="sec-dict">
+    <h2 class="section-title">字词词典</h2>
+    <p style="color:#666;margin-bottom:1rem;">悬停或点击高亮词汇查看注释。以下是重点字词汇总：</p>
+    <div class="dict-grid">
+      <div class="dict-card">
+        <span class="word">崩殂</span><span class="pinyin">bēng cú</span>
+        <div class="meaning">古代称帝王之死。崩：皇帝死；殂：死亡。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">秋</span>
+        <div class="meaning">古义：时刻、时候。今义：秋天。"危急存亡之秋"。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">菲薄</span>
+        <div class="meaning">瞧不起，轻视。"妄自菲薄" = 过分看轻自己。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">陟</span><span class="pinyin">zhì</span>
+        <div class="meaning">提拔、升官。"陟罚臧否" = 提拔好人惩罚坏人。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">臧否</span><span class="pinyin">zāng pǐ</span>
+        <div class="meaning">善恶，好坏。臧：善；否：恶。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">有司</span>
+        <div class="meaning">主管某部门的官吏。"宜付有司论其刑赏"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">裨补</span><span class="pinyin">bì bǔ</span>
+        <div class="meaning">弥补、补救。裨：补助。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">阙漏</span><span class="pinyin">quē lòu</span>
+        <div class="meaning">缺点和疏漏。阙：通"缺"，缺点。</div>
+        <span class="tag tongjia">通假字</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">淑均</span>
+        <div class="meaning">善良公正。淑：善良；均：公正。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">行阵</span>
+        <div class="meaning">军队行列，指军队。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">倾颓</span>
+        <div class="meaning">衰败、崩溃。"后汉所以倾颓"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">布衣</span>
+        <div class="meaning">古义：平民百姓。今义：布做的衣服。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">卑鄙</span>
+        <div class="meaning">古义：地位低下，见识浅陋。今义：品德恶劣。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+      <div class="dict-card">
+        <span class="word">猥</span><span class="pinyin">wěi</span>
+        <div class="meaning">辱，降低身份。"猥自枉屈"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">驱驰</span>
+        <div class="meaning">奔走效劳。"遂许先帝以驱驰"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">不毛</span>
+        <div class="meaning">不生长草木的地方，指荒凉之地。"深入不毛"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">驽钝</span><span class="pinyin">nú dùn</span>
+        <div class="meaning">比喻自己的才能平庸。"庶竭驽钝"。</div>
+      </div>
+      <div class="dict-card">
+        <span class="word">涕</span>
+        <div class="meaning">古义：眼泪。今义：鼻涕。"临表涕零"。</div>
+        <span class="tag gujin">古今异义</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 3: 文学手法 ====== -->
+  <div class="section" id="sec-devices">
+    <h2 class="section-title">文学手法探索</h2>
+
+    <div class="device-card">
+      <h3>💝 情真意切——抒情散文典范</h3>
+      <div class="explain">《出师表》不是华丽的散文，而是以情感打动人心的典范。全文没有华丽的辞藻，却字字句句发自肺腑。</div>
+      <div class="example">
+        "临表涕零，不知所云"——结尾这句话，让读者感受到一位老臣写表文时的泪流满面。真情最动人。
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>⚖️ 对比论证</h3>
+      <div class="explain">通过对比，突出观点，警醒读者。</div>
+      <div class="example">
+        "亲贤臣，远小人，此汉室所以兴隆也；亲小人，远贤臣，此后汉所以倾颓也。"——兴隆与倾颓对比，亲贤与亲小对比，历史教训一目了然。
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>📝 引用先帝——增强说服力</h3>
+      <div class="explain">诸葛亮反复引用刘备（先帝），借其威望增强说服力。刘禅敬重父亲，用先帝的名义比用自己的名义更有分量。</div>
+      <div class="example">
+        "先帝简拔以遗陛下"——推荐贤臣时<br>
+        "先帝称之曰能"——推荐武将时<br>
+        "先帝在时，每与臣论此事"——论述亲贤远小时<br>
+        "先帝不以臣卑鄙"——追述往事时<br>
+        "先帝知臣谨慎，故临崩寄臣以大事"——陈述职责时
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>🔗 叙议结合——边叙述边议论</h3>
+      <div class="explain">文章不是单纯的建议或叙述，而是叙述自己的经历和往事，来论证自己的忠诚和建议的合理性。</div>
+      <div class="example">
+        第八段追述"三顾茅庐""白帝城托孤"的往事，第九段陈述北伐的计划——这些都是叙述，但目的是表达"我为何如此忠诚""我为何必须北伐"。
+      </div>
+    </div>
+
+    <div class="device-card">
+      <h3>🔍 找一找：以下句子主要用了什么手法？</h3>
+      <div class="find-game" id="find-game">
+        <div class="sentence" data-answer="对比">
+          <span>"亲贤臣，远小人……亲小人，远贤臣……"</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="对比">对比</button>
+            <button class="device-btn" data-answer="对偶">对偶</button>
+            <button class="device-btn" data-answer="引用">引用</button>
+          </div>
+        </div>
+        <div class="sentence" data-answer="引用">
+          <span>"先帝简拔以遗陛下"</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="对比">对比</button>
+            <button class="device-btn" data-answer="对偶">对偶</button>
+            <button class="device-btn" data-answer="引用">引用</button>
+          </div>
+        </div>
+        <div class="sentence" data-answer="对偶">
+          <span>"陟罚臧否，不宜异同"</span>
+          <div class="device-options">
+            <button class="device-btn" data-answer="对比">对比</button>
+            <button class="device-btn" data-answer="对偶">对偶</button>
+            <button class="device-btn" data-answer="引用">引用</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 4: 结构地图 ====== -->
+  <div class="section" id="sec-structure">
+    <h2 class="section-title">结构地图</h2>
+
+    <h3 style="margin-bottom:1rem;">🗺️ 文章脉络</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <h4>分析形势（1-2段）</h4>
+        <div class="desc">"危急存亡"→将士不懈忘身→追念先帝殊遇。先指出危机，再指出希望。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>提出建议（3-7段）</h4>
+        <div class="desc">开张圣听→公平赏罚→推荐贤臣→亲贤远小。层层递进，核心是"亲贤远小"。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>追述往事（8段）</h4>
+        <div class="desc">布衣躬耕→三顾茅庐→白帝托孤→夙夜忧叹。感念先帝知遇之恩和托孤之重。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>陈述职责（9段）</h4>
+        <div class="desc">南方已定→北伐中原→兴复汉室。表明自己的使命和决心。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>临别叮嘱（10段）</h4>
+        <div class="desc">分工明确：我负责北伐，臣负责进谏，陛下自谋。不效治罪。</div>
+      </div>
+      <div class="timeline-item">
+        <h4>临表涕零（结尾）</h4>
+        <div class="desc">"临表涕零，不知所云"——情真意切，泪流满面。</div>
+      </div>
+    </div>
+
+    <h3 style="margin:2rem 0 1rem;">📊 建议层次</h3>
+    <p style="color:#666;margin-bottom:1rem;font-size:0.95rem;">
+      诸葛亮给刘禅的建议，从具体到抽象，层层深入——
+    </p>
+    <div class="chart-bar-container">
+      <div class="chart-row">
+        <div class="label">开张圣听</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:25%;background:#3498db"></div></div>
+        <div class="count">听取意见</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">公平赏罚</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:30%;background:#9b59b6"></div></div>
+        <div class="count">宫中府中一体</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">推荐贤臣</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:40%;background:#e67e22"></div></div>
+        <div class="count">郭攸之、费祎、董允、向宠</div>
+      </div>
+      <div class="chart-row">
+        <div class="label">亲贤远小</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:100%;background:#c0392b"></div></div>
+        <div class="count">核心建议！汉朝兴衰教训</div>
+      </div>
+    </div>
+    <div class="tip-box" style="margin-top:1rem;">
+      四条建议层层递进：前三条是具体措施（听意见、赏罚公平、用贤臣），最后一条"亲贤远小"是总纲，是治国之本。结构上由分到总，由具体到抽象。
+    </div>
+  </div>
+
+  <!-- ====== Section 5: 主题讨论 ====== -->
+  <div class="section" id="sec-themes">
+    <h2 class="section-title">主题讨论</h2>
+
+    <div class="theme-card zhongcheng">
+      <h3>🫡 忠诚：鞠躬尽瘁，死而后已</h3>
+      <div class="evidence">"受命以来，夙夜忧叹，恐托付不效。"</div>
+      <p class="prompt-q">思考：诸葛亮对刘备的忠诚，超越了普通的君臣关系。他为什么如此忠诚？这种忠诚在今天还有什么价值？</p>
+      <div class="notes-area" data-key="zhongcheng">
+        <textarea placeholder="写下你的想法……"></textarea>
+        <button class="save-btn">保存笔记</button>
+        <span class="saved-msg">已保存 ✓</span>
+      </div>
+    </div>
+
+    <div class="theme-card renxian">
+      <h3>👑 仁贤：亲贤臣，远小人</h3>
+      <div class="evidence">"亲贤臣，远小人，此汉室所以兴隆也。"</div>
+      <p class="prompt-q">思考：诸葛亮总结汉朝兴衰的规律——兴盛时期亲贤远小，衰败时期亲小远贤。这个规律在今天还适用吗？身边"贤臣"和"小人"如何辨别？</p>
+      <div class="notes-area" data-key="renxian">
+        <textarea placeholder="写下你的想法……"></textarea>
+        <button class="save-btn">保存笔记</button>
+        <span class="saved-msg">已保存 ✓</span>
+      </div>
+    </div>
+
+    <div class="theme-card yimin">
+      <h3>🎯 以民为本：兴复汉室，还于旧都</h3>
+      <div class="evidence">"兴复汉室，还于旧都。"</div>
+      <p class="prompt-q">思考：诸葛亮北伐的目标是"兴复汉室"，在今天看来，这个目标实现了吗？他为什么要坚持北伐？如果不北伐，蜀汉的命运会怎样？</p>
+      <div class="notes-area" data-key="yimin">
+        <textarea placeholder="写下你的想法……"></textarea>
+        <button class="save-btn">保存笔记</button>
+        <span class="saved-msg">已保存 ✓</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Section 6: 小测验 ====== -->
+  <div class="section" id="sec-quiz">
+    <h2 class="section-title">综合小测验</h2>
+    <p style="color:#666;margin-bottom:1.5rem;">检验一下你的学习成果吧！</p>
+
+    <div id="quiz-container">
+      <div class="quiz-item" data-quiz-q="1">
+        <span class="q-num">Q1.</span>
+        <div class="q-text">《出师表》是谁写给谁的？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">诸葛亮写给刘备</div>
+          <div class="q-opt" data-correct="true">诸葛亮写给刘禅</div>
+          <div class="q-opt" data-correct="false">刘备写给诸葛亮</div>
+          <div class="q-opt" data-correct="false">刘禅写给诸葛亮</div>
+        </div>
+        <div class="q-explain">《出师表》是诸葛亮写给后主刘禅的表文。刘备已于223年去世，本文写于227年。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="2">
+        <span class="q-num">Q2.</span>
+        <div class="q-text">"危急存亡之秋"中"秋"的意思是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">秋天</div>
+          <div class="q-opt" data-correct="true">时刻、时候</div>
+          <div class="q-opt" data-correct="false">时期</div>
+          <div class="q-opt" data-correct="false">季节</div>
+        </div>
+        <div class="q-explain">古汉语中"秋"常指"时刻、时候"，如"多事之秋"。这里指生死存亡的关键时刻。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="3">
+        <span class="q-num">Q3.</span>
+        <div class="q-text">诸葛亮给刘禅的核心建议是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">开张圣听</div>
+          <div class="q-opt" data-correct="false">公平赏罚</div>
+          <div class="q-opt" data-correct="true">亲贤臣，远小人</div>
+          <div class="q-opt" data-correct="false">北伐中原</div>
+        </div>
+        <div class="q-explain">"亲贤臣，远小人"是全文最核心的建议，总结了汉朝兴衰的历史规律。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="4">
+        <span class="q-num">Q4.</span>
+        <div class="q-text">"三顾臣于草庐之中"指的是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="true">刘备三次拜访诸葛亮</div>
+          <div class="q-opt" data-correct="false">诸葛亮三次拜访刘备</div>
+          <div class="q-opt" data-correct="false">刘禅三次拜访诸葛亮</div>
+          <div class="q-opt" data-correct="false">刘备三次战败</div>
+        </div>
+        <div class="q-explain">"三顾茅庐"是刘备三次到诸葛亮隐居的草庐拜访，诚心请他出山辅佐。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="5">
+        <span class="q-num">Q5.</span>
+        <div class="q-text">"布衣"的古义是？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">布做的衣服</div>
+          <div class="q-opt" data-correct="true">平民百姓</div>
+          <div class="q-opt" data-correct="false">穷人</div>
+          <div class="q-opt" data-correct="false">农民</div>
+        </div>
+        <div class="q-explain">"布衣"古义指平民百姓（穿布衣的人），今义指布做的衣服。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="6">
+        <span class="q-num">Q6.</span>
+        <div class="q-text">"临崩寄臣以大事"指的是什么历史事件？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">三顾茅庐</div>
+          <div class="q-opt" data-correct="true">白帝城托孤</div>
+          <div class="q-opt" data-correct="false">赤壁之战</div>
+          <div class="q-opt" data-correct="false">北伐中原</div>
+        </div>
+        <div class="q-explain">"白帝城托孤"——刘备临终前在白帝城将儿子刘禅和国家大事托付给诸葛亮。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="7">
+        <span class="q-num">Q7.</span>
+        <div class="q-text">诸葛亮推荐了哪些贤臣？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">曹操、孙权</div>
+          <div class="q-opt" data-correct="true">郭攸之、费祎、董允、向宠</div>
+          <div class="q-opt" data-correct="false">关羽、张飞</div>
+          <div class="q-opt" data-correct="false">赵云、马超</div>
+        </div>
+        <div class="q-explain">诸葛亮推荐了文臣郭攸之、费祎、董允和武将向宠。</div>
+      </div>
+
+      <div class="quiz-item" data-quiz-q="8">
+        <span class="q-num">Q8.</span>
+        <div class="q-text">"临表涕零，不知所云"表达了什么情感？</div>
+        <div class="q-options">
+          <div class="q-opt" data-correct="false">对战争的恐惧</div>
+          <div class="q-opt" data-correct="false">对失败的担忧</div>
+          <div class="q-opt" data-correct="true">对先帝的感念和对刘禅的牵挂</div>
+          <div class="q-opt" data-correct="false">对自己前途的不确定</div>
+        </div>
+        <div class="q-explain">诸葛亮流泪是因为感念先帝知遇之恩和托孤之重，担忧刘禅能否亲贤远小，牵挂北伐能否成功。</div>
+      </div>
+    </div>
+
+    <div id="quiz-result">
+      <div class="score" id="quiz-score"></div>
+      <div class="msg" id="quiz-msg"></div>
+      <button class="btn-start" id="btn-reset-quiz" style="margin-top:1.5rem;font-size:1rem;padding:10px 32px;">重新测验</button>
+    </div>
+  </div>
+
+  <!-- ====== Section: 延伸阅读 ====== -->
+  <div class="section extend-section" id="sec-extend">
+    <h2 class="section-title">延伸阅读</h2>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">📜</span>
+        <h3>前出师表与后出师表</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>诸葛亮共写了两篇出师表：</p>
+          <ul style="list-style:none;padding:0;">
+            <li>· <b>《前出师表》</b>（本文）：写于建兴五年（227），第一次北伐前</li>
+            <li>· <b>《后出师表》</b>：写于建兴六年（228），第二次北伐前</li>
+          </ul>
+          <p>两篇风格不同：《前出师表》重在叮嘱刘禅治国之道，《后出师表》重在论述北伐的必要性。但都有名句流传——</p>
+          <blockquote>"鞠躬尽瘁，死而后已"——出自《后出师表》，成为诸葛亮一生的写照。</blockquote>
+        </div>
+      </div>
+    </div>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">⚔️</span>
+        <h3>诸葛亮的北伐——为何屡败屡战？</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>诸葛亮共进行了五次北伐，全部失败。但他为何坚持北伐？</p>
+          <ul style="list-style:none;padding:0;">
+            <li>· 蜀汉国小民弱，若不主动出击，只能坐以待毙</li>
+            <li>· "汉室正统"的政治定位，必须以"兴复汉室"为目标</li>
+            <li>· 先帝遗愿，托孤重任，不能辜负</li>
+          </ul>
+          <p>北伐虽败，却体现了诸葛亮"知其不可而为之"的精神——明知困难，依然前行。这种精神，比成败更值得敬佩。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">📖</span>
+        <h3>"表"这种文体——臣子给皇帝的信</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>"表"是古代臣子向皇帝陈述意见的一种文体，特点：</p>
+          <ul style="list-style:none;padding:0;">
+            <li>· 用于下级向上级，有固定格式</li>
+            <li>· 内容多为请求、建议、说明</li>
+            <li>· 语言庄重，情感真挚</li>
+          </ul>
+          <p>古代名"表"除《出师表》外，还有李密的《陈情表》——两篇并称"抒情散文双璧"。一文写忠君，一文写孝亲，都以情感打动人心。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="extend-card">
+      <div class="extend-card-header">
+        <span class="extend-icon">🎭</span>
+        <h3>刘禅真的是"扶不起的阿斗"吗？</h3>
+        <span class="extend-arrow">▸</span>
+      </div>
+      <div class="extend-content">
+        <div class="extend-content-inner">
+          <p>刘禅常被视为昏君，被称为"扶不起的阿斗"。但历史真相更复杂：</p>
+          <ul style="list-style:none;padding:0;">
+            <li>· 他统治蜀汉长达 41 年，是三国时期在位最久的皇帝</li>
+            <li>· 诸葛亮死后，他继续统治了 29 年</li>
+            <li>· 他投降曹魏后，说出"此间乐，不思蜀"，被认为是糊涂——但也有人认为这是自保的智慧</li>
+          </ul>
+          <p>诸葛亮写《出师表》时，刘禅年仅 20 岁。一个年轻的皇帝，面对父辈的老臣，是否能完全听取建议？历史没有给出答案。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-nav">
+    <a href="index.html">← 返回篇目目录</a>
+    <a href="mulanci.html">上一篇：木兰辞 →</a>
+    <a href="shudao.html">下一篇：蜀道难 →</a>
+  </div>
+  <p>出师表互动学习 · 适合中学生使用</p>
+  <p style="margin-top:0.3rem;">基于三国诸葛亮《出师表》制作</p>
+</footer>
+
+<script>
+window.PAGE_CONFIG = {
+  accent: '#8e44ad',
+  storagePrefix: 'chushi_note_',
+  quizName: '出师表'
+};
+</script>
+<script src="common.js" defer></script>
+</body>
+</html>
